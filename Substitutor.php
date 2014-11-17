@@ -81,6 +81,7 @@ function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMin
   $newText = substituteTimestamp($oldText);
   $newText = substituteRandomNumber($newText);
   $newText = substituteRandomString($newText);
+  $newText = substituteFakeID($newText);
 
 
   // If a substitution was made, save this as a new, minor edit
@@ -144,6 +145,22 @@ function substituteRandomString($oldText) {
 }
 
 
+/**
+ * Substitutes ___FAKEID___ with a fake ID, that should be unique (no)
+ *
+ * @param  [string] $oldText original mediawiki text
+ * @return [string]          substituted mediawiki text
+ */
+function substituteFakeID($oldText) {
+
+  $pattern = "/___FAKEID___/";
+  $newText = preg_replace_callback($pattern, "generateFakeID", $oldText);
+
+  return $newText;
+}
+
+
+
 //////////////////////////////////////////
 // HELPER / CALLBACK FUNCTIONS          //
 //////////////////////////////////////////
@@ -154,8 +171,10 @@ function substituteRandomString($oldText) {
  * @return [integer]
  */
 function generateRandomNumber() {
+
   global $wgSubstitutorMinRand;
   global $wgSubstitutorMaxRand;
+
   return rand($wgSubstitutorMinRand, $wgSubstitutorMaxRand);
 }
 
@@ -164,15 +183,35 @@ function generateRandomNumber() {
  *
  * @return [string]
  */
-function generateRandomString() {
+function generateRandomString($length) {
 
   global $wgSubstitutorRandStringLength;
+
+  if (!$length) {
+    $length = $wgSubstitutorRandStringLength;
+  }
 
   $key = '';
   $keys = array_merge(range(0,9), range('a', 'z'));
 
-  for($i=0; $i < $wgSubstitutorRandStringLength; $i++) {
+  for($i=0; $i < $length; $i++) {
       $key .= $keys[array_rand($keys)];
   }
   return $key;
+}
+
+/**
+ * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
+ *
+ * This is achived through mixing a militimestamp (php uniqid();) with a random string
+ *
+ * @return [string]
+ */
+function generateFakeID() {
+
+  $id = uniqid();
+  $id .= generateRandomString(4);
+
+  return $id;
+
 }
