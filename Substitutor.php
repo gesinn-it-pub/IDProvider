@@ -1,14 +1,12 @@
 <?php
 /**
- * Substitutor looks for "magic" words in your markup and substitutes them to calculated strings
- * This differes from usual magic words in that they are only replaced once, and not dynamically
- * (You wouldn't want this with timestamps and random numbers if you use them as ID's)
+ * Substitutor is a MediaWiki Extension that does one-time string substitution.
  *
- * Supports currently:
- * ___TIMESTAMP___
- * ___RANDOMNUMBER___
- * ___RANDOMSTRING___
- *
+ * Common "magic words" in MediaWiki are replaced dynamically in MediaWiki.
+ * You would not want this dynamic behaviour with timestamps or unique strings / numbers / IDs,
+ * since they should be fixed after they were created.
+ * This provides useful if you want to create unique names and URL's for "red links",
+ * or simply timestamp sites / changes.
  *
  * For more info see http://mediawiki.org/wiki/Extension:Substitutor
  *
@@ -124,14 +122,13 @@ function substituteTimestamp($oldText) {
 function substituteRandomNumber($oldText) {
 
   $pattern = "/___RANDOMNUMBER___/";
-  $newText = preg_replace_callback($pattern, "generateRandomNumber", $oldText);
+  $newText = preg_replace_callback($pattern, "generateRandomNumberCallback", $oldText);
 
   return $newText;
 }
 
 /**
- * Substitutes ___RANDOMNUMBER___ with a random number
- * Minimum and maximum are defined through $wgSubstitutorMinRand and $wgSubstitutorMaxRand
+ * Substitutes ___RANDOMSTRING___ with a random string of length $wgSubstitutorRandStringLength
  *
  * @param  [string] $oldText original mediawiki text
  * @return [string]          substituted mediawiki text
@@ -139,7 +136,7 @@ function substituteRandomNumber($oldText) {
 function substituteRandomString($oldText) {
 
   $pattern = "/___RANDOMSTRING___/";
-  $newText = preg_replace_callback($pattern, "generateRandomString", $oldText);
+  $newText = preg_replace_callback($pattern, "generateRandomStringCallback", $oldText);
 
   return $newText;
 }
@@ -154,7 +151,7 @@ function substituteRandomString($oldText) {
 function substituteFakeID($oldText) {
 
   $pattern = "/___FAKEID___/";
-  $newText = preg_replace_callback($pattern, "generateFakeID", $oldText);
+  $newText = preg_replace_callback($pattern, "generateFakeIDCallback", $oldText);
 
   return $newText;
 }
@@ -170,7 +167,7 @@ function substituteFakeID($oldText) {
  *
  * @return [integer]
  */
-function generateRandomNumber() {
+function generateRandomNumberCallback() {
 
   global $wgSubstitutorMinRand;
   global $wgSubstitutorMaxRand;
@@ -181,6 +178,37 @@ function generateRandomNumber() {
 /**
  * Callback function that returns a random string with length of $wgSubstitutorRandStringLength
  *
+ * @return [string]
+ */
+function generateRandomStringCallback() {
+
+  global $wgSubstitutorRandStringLength;
+
+  return generateRandomString($wgSubstitutorRandStringLength);
+}
+
+
+
+/**
+ * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
+ *
+ * This is achived through mixing a militimestamp (php uniqid();) with a random string
+ *
+ * @return [string]
+ */
+function generateFakeIDCallback() {
+
+  $id = uniqid();
+  $id .= generateRandomString(4);
+
+  return $id;
+
+}
+
+/**
+ * Rturns a random string with length of $length
+ *
+ * @param  [number] $length string length
  * @return [string]
  */
 function generateRandomString($length) {
@@ -198,20 +226,4 @@ function generateRandomString($length) {
       $key .= $keys[array_rand($keys)];
   }
   return $key;
-}
-
-/**
- * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
- *
- * This is achived through mixing a militimestamp (php uniqid();) with a random string
- *
- * @return [string]
- */
-function generateFakeID() {
-
-  $id = uniqid();
-  $id .= generateRandomString(4);
-
-  return $id;
-
 }
