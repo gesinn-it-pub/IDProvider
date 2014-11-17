@@ -65,15 +65,17 @@ $wgHooks['PageContentSaveComplete'][] = 'onPageContentSaveComplete';
 //////////////////////////////////////////
 
 /**
-* Add plastic.js library to all pages
+* Hook: After a wiki page is saved, look for strings to substitute
+* If there are some, a new revision will be made that contains the substitutions
 */
 function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $status ) {
 
-  $title = $wikiPage->getTitle();
-  $oldText = $content->getContentHandler()->serializeContent($content);
+  // Get all necessary variables
+  $oldText  = $content->getContentHandler()->serializeContent($content);
+  $title    = $wikiPage->getTitle();
   $titleObj = Title::makeTitle(0, $title);
-  $page = WikiPage::factory($titleObj);
-  $context = new RequestContext();
+  $page     = WikiPage::factory($titleObj);
+  $context  = new RequestContext();
 
   // Do the actual substitution
   $newText = substituteTimestamp($oldText);
@@ -96,7 +98,12 @@ function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMin
 }
 
 
-
+/**
+ * Substitutes ___TIMESTAMP___ for the current UNIX timestamp
+ *
+ * @param  [string] $oldText original mediawiki text
+ * @return [string]          substituted mediawiki text
+ */
 function substituteTimestamp($oldText) {
 
   $date = new DateTime();
@@ -106,6 +113,13 @@ function substituteTimestamp($oldText) {
   return $newText;
 }
 
+/**
+ * Substitutes ___RANDOMNUMBER___ with a random number
+ * Minimum and maximum are defined through $wgSubstitutorMinRand and $wgSubstitutorMaxRand
+ *
+ * @param  [string] $oldText original mediawiki text
+ * @return [string]          substituted mediawiki text
+ */
 function substituteRandomNumber($oldText) {
 
   $pattern = "/___RANDOMNUMBER___/";
@@ -114,6 +128,13 @@ function substituteRandomNumber($oldText) {
   return $newText;
 }
 
+/**
+ * Substitutes ___RANDOMNUMBER___ with a random number
+ * Minimum and maximum are defined through $wgSubstitutorMinRand and $wgSubstitutorMaxRand
+ *
+ * @param  [string] $oldText original mediawiki text
+ * @return [string]          substituted mediawiki text
+ */
 function substituteRandomString($oldText) {
 
   $pattern = "/___RANDOMSTRING___/";
@@ -123,21 +144,35 @@ function substituteRandomString($oldText) {
 }
 
 
+//////////////////////////////////////////
+// HELPER / CALLBACK FUNCTIONS          //
+//////////////////////////////////////////
+
+/**
+ * Callback function that returns a random number between $wgSubstitutorMinRand and $wgSubstitutorMaxRand
+ *
+ * @return [integer]
+ */
 function generateRandomNumber() {
   global $wgSubstitutorMinRand;
   global $wgSubstitutorMaxRand;
-    return rand($wgSubstitutorMinRand, $wgSubstitutorMaxRand);
+  return rand($wgSubstitutorMinRand, $wgSubstitutorMaxRand);
 }
 
+/**
+ * Callback function that returns a random string with length of $wgSubstitutorRandStringLength
+ *
+ * @return [string]
+ */
 function generateRandomString() {
 
-    global $wgSubstitutorRandStringLength;
+  global $wgSubstitutorRandStringLength;
 
-    $key = '';
-    $keys = array_merge(range(0,9), range('a', 'z'));
+  $key = '';
+  $keys = array_merge(range(0,9), range('a', 'z'));
 
-    for($i=0; $i < $wgSubstitutorRandStringLength; $i++) {
-        $key .= $keys[array_rand($keys)];
-    }
-    return $key;
+  for($i=0; $i < $wgSubstitutorRandStringLength; $i++) {
+      $key .= $keys[array_rand($keys)];
+  }
+  return $key;
 }
