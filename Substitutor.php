@@ -86,7 +86,7 @@ function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMin
   if ($oldText != $newText ) {
     $content = $content->getContentHandler()->unserializeContent( $newText );
 
-    $page->doQuickEditContent($content,
+    $page->doEditContent($content,
       $context->getUser(),
       "Automatic string substitution",
       true // minor modification
