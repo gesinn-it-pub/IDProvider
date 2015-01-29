@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Fannon"
+		]
+	},
+	"substitutor-desc": "Substitutor is a MediaWiki Extension that does one-time string substitution."
+}

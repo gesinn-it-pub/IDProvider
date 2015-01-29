@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Fannon"
+		]
+	},
+	"substitutor-desc": "Ermöglicht einmalige text-ersetzungen im wikitext. Nützlich für IDs, timestamps, etc."
+}

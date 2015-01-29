@@ -12,8 +12,15 @@
  *
  * @file
  * @ingroup Extensions
- * @author Simon Heimler, 2014
- * @license GNU General Public Licence 2.0 or later
+ * @package MediaWiki
+ *
+ * @links https://github.com/Fannon/Substitutor/blob/master/README.md Documentation
+ * @links https://www.mediawiki.org/wiki/Extension_talk:Substitutor Support
+ * @links https://github.com/Fannon/Substitutor/issues Bug tracker
+ * @links https://github.com/Fannon/Substitutor Source code
+ *
+ * @author Simon Heimler (Fannon), 2015
+ * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
 
 
@@ -30,7 +37,7 @@ $dirbasename = basename( $dir );
 //////////////////////////////////////////
 
 $wgSubstitutorMinRand          = 1000000000;
-$wgSubstitutorMaxRand          = 9909999999;
+$wgSubstitutorMaxRand          = 9999999999;
 $wgSubstitutorRandStringLength = 12;
 
 
@@ -42,9 +49,10 @@ $wgExtensionCredits['other'][] = array(
    'path'           => __FILE__,
    'name'           => 'Substitutor',
    'author'         => array('Simon Heimler'),
-   'version'        => '0.0.1',
+   'version'        => '0.1.0',
    'url'            => 'https://www.mediawiki.org/wiki/Extension:Substitutor',
-   'descriptionmsg' => 'Substitutor-desc',
+   'descriptionmsg' => 'substitutor-desc',
+   'license-name'   => 'MIT'
 );
 
 
@@ -82,14 +90,13 @@ function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMin
   $newText = substituteFakeID($newText);
 
 
-  // If a substitution was made, save this as a new, minor edit
+  // If a substitution was made, save the edited page anew
+  // @see https://doc.wikimedia.org/mediawiki-core/master/php/html/classWikiPage.html
   if ($oldText != $newText ) {
     $content = $content->getContentHandler()->unserializeContent( $newText );
-
     $page->doEditContent($content,
       $context->getUser(),
-      "Automatic string substitution",
-      true // minor modification
+      "Extension:Substitor - automatic string substitution"
     );
   };
 
