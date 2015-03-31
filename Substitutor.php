@@ -88,6 +88,7 @@ function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMin
   $newText = substituteRandomNumber($newText);
   $newText = substituteRandomString($newText);
   $newText = substituteFakeID($newText);
+  $newText = substituteShortID($newText);
 
 
   // If a substitution was made, save the edited page anew
@@ -150,7 +151,8 @@ function substituteRandomString($oldText) {
 
 
 /**
- * Substitutes ___FAKEID___ with a fake ID, that should be unique (no)
+ * Substitutes ___FAKEID___ with a fake ID, that should be unique
+ * (No garantuees however!)
  *
  * @param  [string] $oldText original mediawiki text
  * @return [string]          substituted mediawiki text
@@ -159,6 +161,21 @@ function substituteFakeID($oldText) {
 
   $pattern = "/___FAKEID___/";
   $newText = preg_replace_callback($pattern, "generateFakeIDCallback", $oldText);
+
+  return $newText;
+}
+
+
+/**
+ * Substitutes ___SHORTID___ with a shorter fake ID, that should be unique
+ *
+ * @param  [string] $oldText original mediawiki text
+ * @return [string]          substituted mediawiki text
+ */
+function substituteShortID($oldText) {
+
+  $pattern = "/___SHORTID___/";
+  $newText = preg_replace_callback($pattern, "generateShortIDCallback", $oldText);
 
   return $newText;
 }
@@ -205,11 +222,29 @@ function generateRandomStringCallback() {
  */
 function generateFakeIDCallback() {
 
-  $id = uniqid();
-  $id .= generateRandomString(4);
+  $id = generateRandomString(4);
+  $id .= uniqid();
 
   return $id;
+}
 
+/**
+ * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
+ * This version tries to be as short as possible
+ *
+ * This is achived through mixing a militimestamp (php uniqid();) with a random string
+ *
+ * @return [string]
+ */
+function generateShortIDCallback() {
+
+  // Generates a random string of length 1-2.
+  $id = base_convert(rand(0, 36^2), 10, 36);
+
+  // This will "compress" the uniqid (some sort of microtimestamp) to a more dense string
+  $id .= base_convert(uniqid(), 10, 36);
+
+  return $id;
 }
 
 /**
