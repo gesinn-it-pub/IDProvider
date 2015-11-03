@@ -1,11 +1,11 @@
 <?php
+
 /**
- * Hooks for Example extension
+ * Hooks for IDProvider extension
  *
  * @file
  * @ingroup Extensions
  */
-
 class IDProviderHooks {
 
     /**
@@ -35,7 +35,7 @@ class IDProviderHooks {
             $content = $content->getContentHandler()->unserializeContent( $newText );
             $page->doEditContent($content,
                 $context->getUser(),
-                "Extension:Substitor - automatic string substitution"
+                "Extension:IDProvider - automatic string substitution"
             );
         };
 

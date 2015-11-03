@@ -3,7 +3,7 @@
  * IDProvider is a MediaWiki Extension that provides (unique) ID's in serveral ways:
  * * Through the API
  * * Through a PHP getter function
- * * Through wikitext string substitutions (@see http://mediawiki.org/wiki/Extension:Substitutor)
+ * * Through wikitext string substitutions (@see http://mediawiki.org/wiki/Extension:IDProvider)
  *
  * @see http://mediawiki.org/wiki/Extension:IDProvider
  *
@@ -51,9 +51,9 @@ if (function_exists('wfLoadExtension')) {
 	// CONFIG                               //
 	//////////////////////////////////////////
 
-	$wgSubstitutorMinRand          = 1000000000;
-	$wgSubstitutorMaxRand          = 9999999999;
-	$wgSubstitutorRandStringLength = 12;
+	$wgIDProviderMinRandNumber      = 1000000000;
+	$wgIDProviderMaxRandNumber      = 9999999999;
+	$wgIDProviderRandStringLength 	= 12;
 
 
 	//////////////////////////////////////////

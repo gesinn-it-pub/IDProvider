@@ -1,4 +1,13 @@
 <?php
+/**
+ * The actual IDProvider Functions
+ *
+ * They can be used programmatically through this class
+ * Use the static getId function as the main entry point
+ *
+ * @file
+ * @ingroup Extensions
+ */
 class IDProviderFunctions {
 
 
