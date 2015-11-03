@@ -3,6 +3,35 @@ class IDProviderFunctions {
 
 
     /**
+     * Returns a UUID
+     * @see http://stackoverflow.com/a/2040279
+     *
+     * @return string
+     */
+    public static function getUUID() {
+        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            // 32 bits for "time_low"
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+
+            // 16 bits for "time_mid"
+            mt_rand( 0, 0xffff ),
+
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 4
+            mt_rand( 0, 0x0fff ) | 0x4000,
+
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+            mt_rand( 0, 0x3fff ) | 0x8000,
+
+            // 48 bits for "node"
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+        );
+    }
+
+
+    /**
     * Substitutes ___TIMESTAMP___ for the current UNIX timestamp
     *
     * @param  [string] $oldText original mediawiki text
@@ -88,12 +117,12 @@ class IDProviderFunctions {
     *
     * @return [integer]
     */
-    function generateRandomNumberCallback() {
+    public function generateRandomNumberCallback() {
 
-    global $wgSubstitutorMinRand;
-    global $wgSubstitutorMaxRand;
+        global $wgSubstitutorMinRand;
+        global $wgSubstitutorMaxRand;
 
-    return rand($wgSubstitutorMinRand, $wgSubstitutorMaxRand);
+        return rand($wgSubstitutorMinRand, $wgSubstitutorMaxRand);
     }
 
     /**
@@ -101,11 +130,11 @@ class IDProviderFunctions {
     *
     * @return [string]
     */
-    function generateRandomStringCallback() {
+    public static function generateRandomStringCallback() {
 
-    global $wgSubstitutorRandStringLength;
+        global $wgSubstitutorRandStringLength;
 
-    return generateRandomString($wgSubstitutorRandStringLength);
+        return generateRandomString($wgSubstitutorRandStringLength);
     }
 
 
@@ -117,12 +146,12 @@ class IDProviderFunctions {
     *
     * @return [string]
     */
-    function generateFakeIDCallback() {
+    public static function generateFakeIDCallback() {
 
-    $id = generateRandomString(4);
-    $id .= uniqid();
+        $id = self::generateRandomString(4);
+        $id .= self::uniqid();
 
-    return $id;
+        return $id;
     }
 
     /**
@@ -133,15 +162,15 @@ class IDProviderFunctions {
     *
     * @return [string]
     */
-    function generateShortIDCallback() {
+    public static function generateShortIDCallback() {
 
-    // Generates a random string of length 1-2.
-    $id = base_convert(rand(0, 36^2), 10, 36);
+        // Generates a random string of length 1-2.
+        $id = base_convert(rand(0, 36^2), 10, 36);
 
-    // This will "compress" the uniqid (some sort of microtimestamp) to a more dense string
-    $id .= base_convert(uniqid(), 10, 36);
+        // This will "compress" the uniqid (some sort of microtimestamp) to a more dense string
+        $id .= base_convert(uniqid(), 10, 36);
 
-    return $id;
+        return $id;
     }
 
     /**
@@ -150,21 +179,21 @@ class IDProviderFunctions {
     * @param  [number] $length string length
     * @return [string]
     */
-    function generateRandomString($length) {
+    public static function generateRandomString($length) {
 
-    global $wgSubstitutorRandStringLength;
+        global $wgSubstitutorRandStringLength;
 
-    if (!$length) {
-    $length = $wgSubstitutorRandStringLength;
-    }
+        if (!$length) {
+            $length = $wgSubstitutorRandStringLength;
+        }
 
-    $key = '';
-    $keys = array_merge(range(0,9), range('a', 'z'));
+        $key = '';
+        $keys = array_merge(range(0,9), range('a', 'z'));
 
-    for($i=0; $i < $length; $i++) {
-    $key .= $keys[array_rand($keys)];
-    }
-    return $key;
+        for($i=0; $i < $length; $i++) {
+            $key .= $keys[array_rand($keys)];
+        }
+        return $key;
     }
 
 }

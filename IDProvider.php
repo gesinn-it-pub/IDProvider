@@ -58,6 +58,7 @@ $wgExtensionCredits['other'][] = array(
 
 // Load Classes
 $wgAutoloadClasses['IDProviderHooks'] = $dir . '/IDProvider.hooks.php';
+$wgAutoloadClasses['IDProviderFunctions'] = $dir . '/IDProvider.functions.php';
 $wgAutoloadClasses['IDProviderApi'] = $dir . '/api/IDProviderApi.php';
 
 // Register hooks

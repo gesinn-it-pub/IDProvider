@@ -1,28 +1,32 @@
 <?php
 class IDProviderApi extends ApiQueryBase {
 
-	/**
-	 * Constructor is optional. Only needed if we give
-	 * this module properties a prefix (in this case we're using
-	 * "ex" as the prefix for the module's properties.
-	 * Query modules have the convention to use a property prefix.
-	 * Base modules generally don't use a prefix, and as such don't
-	 * need the constructor in most cases.
-	 */
+    /**
+     * Constructor is optional. Only needed if we give
+     * this module properties a prefix (in this case we're using
+     * "ex" as the prefix for the module's properties.
+     * Query modules have the convention to use a property prefix.
+     * Base modules generally don't use a prefix, and as such don't
+     * need the constructor in most cases.
+     *
+     * @param ApiQuery $query
+     * @param string $moduleName
+     */
 	public function __construct( $query, $moduleName ) {
-		parent::__construct( $query, $moduleName, 'ex' );
+		parent::__construct( $query, $moduleName, 'idp' );
 	}
 
-	/**
-	 * In this example we're returning one ore more properties
-	 * of wgExampleFooStuff. In a more realistic example, this
-	 * method would probably
-	 */
+    /**
+     *
+     */
 	public function execute() {
 		global $wgExampleFooStuff;
 		$params = $this->extractRequestParams();
 
 		$stuff = array();
+
+        $stuff['randomString'] = IDProviderFunctions::getUUID();
+        $stuff['test'] = 'TEST';
 
 		// This is a filtered request, only show this key if it exists,
 		// (or none, if it doesn't exist)
