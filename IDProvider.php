@@ -1,6 +1,10 @@
 <?php
 /**
- * Substitutor is a MediaWiki Extension that does one-time string substitution.
+ * IDProvider is a MediaWiki Extension that provides (unique) ID's in serveral ways:
+ *
+ * * Through the API
+ * * Through a PHP getter function
+ * * Through wikitext string substitutions (@see http://mediawiki.org/wiki/Extension:Substitutor)
  *
  * Common "magic words" in MediaWiki are replaced dynamically in MediaWiki.
  * You would not want this dynamic behaviour with timestamps or unique strings / numbers / IDs,
@@ -8,18 +12,16 @@
  * This provides useful if you want to create unique names and URL's for "red links",
  * or simply timestamp sites / changes.
  *
- * For more info see http://mediawiki.org/wiki/Extension:Substitutor
+ * @see http://mediawiki.org/wiki/Extension:IDProvider
  *
  * @file
  * @ingroup Extensions
  * @package MediaWiki
  *
- * @links https://github.com/Fannon/Substitutor/blob/master/README.md Documentation
- * @links https://www.mediawiki.org/wiki/Extension_talk:Substitutor Support
- * @links https://github.com/Fannon/Substitutor/issues Bug tracker
- * @links https://github.com/Fannon/Substitutor Source code
+ * @links https://github.com/gesinn-it/IDProvider/blob/master/README.md Documentation
+ * @links https://github.com/gesinn-it/IDProvider Source code
  *
- * @author Simon Heimler (Fannon), 2015
+ * @author Simon Heimler, 2015
  * @license http://opensource.org/licenses/mit-license.php The MIT License (MIT)
  */
 
