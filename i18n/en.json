@@ -4,5 +4,5 @@
 			"Fannon"
 		]
 	},
-	"substitutor-desc": "Substitutor is a MediaWiki Extension that does one-time string substitution."
+	"idprovider-desc": "A service extension that provides (unique) IDs in several ways"
 }
