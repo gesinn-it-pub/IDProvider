@@ -1,7 +1,7 @@
 {
-	"name"       : "mediawiki/idprovider",
+	"name"       : "gesinn-it/id-provider",
 	"type"       : "mediawiki-extension",
-	"description": "A MediaWiki service extension that provides (unique) IDs in several ways",
+	"description": "IDProvider is an extension to MediaWiki that provides (unique) IDs using different ID algorithms.",
 	"keywords"   : [
 		"wiki",
 		"MediaWiki",
@@ -10,7 +10,7 @@
 		"ID",
 		"UUID"
 	],
-	"homepage"   : "https://www.mediawiki.org/wiki/Extension:IDProvider",
+	"homepage"   : "https://github.com/gesinn-it/IDProvider",
 	"license"    : "MIT",
 	"authors"    : [
 		{
