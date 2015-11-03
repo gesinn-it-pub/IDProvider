@@ -2,7 +2,8 @@
 	"name": "IDProvider",
 	"version": "0.2.0",
 	"author": [
-		"Simon Heimler"
+		"Simon Heimler",
+        "Alexander Gesinn"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:IDProvider",
 	"descriptionmsg": "idprovider-desc",
@@ -16,6 +17,11 @@
 		"IDProviderFunctions": "IDProvider.functions.php",
 		"IDProviderApi": "api/IDProviderApi.php"
 	},
+    "MessagesDirs": {
+      "IDProvider": [
+        "i18n"
+      ]
+    },
 	"Hooks": {
 		"PageContentSaveComplete": [
 			"IDProviderHooks::onPageContentSaveComplete"
