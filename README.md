@@ -1,2 +1,17 @@
 # IDProvider
-This is a MediaWiki Extension to provide IDs using different ID algorithms.
+IDProvider  is an extension to MediaWiki that provides (unique) IDs using different ID algorithms.
+
+## Requirements
+- MediaWiki 1.19+
+
+## Installation
+The recommended way to install this extension is by using [Composer][composer]. Just add the
+following to the MediaWiki `composer.json` file and run the ``php composer.phar install/update`` command.
+
+```json
+{
+	"require": {
+		"gesinn-it/IDProvider": "~1.0"
+	}
+}
+```
