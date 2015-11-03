@@ -29,7 +29,7 @@ class IDProviderFunctions {
 
 		$type = $params['type'];
 		$prefix = $params['prefix'] ?: '';
-		$padding = $params['prefix'] ?: 0;
+		$padding = $params['padding'] ?: 0;
 		$wikipage = $params['wikipage'] ?: false;
 
 		$id = null;
