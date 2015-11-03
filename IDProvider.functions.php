@@ -3,9 +3,10 @@ class IDProviderFunctions {
 
 
 	/**
+	 * This is the global ID providing entry point
+	 * It takes an associative array as its parameter, using the same options as the API
 	 *
-	 *
-	 * @param [array] $params
+	 * @param array $params
 	 *
 	 * @return string|int
 	 *
@@ -23,13 +24,14 @@ class IDProviderFunctions {
 
 		$id = null;
 
-
-		if ($type === 'uuid') { // UUID Provider
+		// UUID Provider
+		if ($type === 'uuid') {
 
 			$id = $prefix . self::getUUID();
 
 
-		} else if ($type === 'increment') { // Increment Provider
+			// Increment Provider
+		} else if ($type === 'increment') {
 
 			$id = self::getIncrement($params['prefix'], $params['padding']);
 

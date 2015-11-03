@@ -1,0 +1,31 @@
+{
+	"name"       : "mediawiki/idprovider",
+	"type"       : "mediawiki-extension",
+	"description": "A MediaWiki service extension that provides (unique) IDs in several ways",
+	"keywords"   : [
+		"wiki",
+		"MediaWiki",
+		"extension",
+		"Service",
+		"ID",
+		"UUID"
+	],
+	"homepage"   : "https://www.mediawiki.org/wiki/Extension:IDProvider",
+	"license"    : "MIT",
+	"authors"    : [
+		{
+			"name" : "Simon Heimler",
+			"email": "heimlersimon@gmail.com",
+			"role" : "Developer"
+		}
+	],
+	"require"    : {
+		"php"                : ">=5.3.0",
+		"composer/installers": "1.*,>=1.0.1"
+	},
+	"autoload"   : {
+		"files": [
+			"IDProvider.php"
+		]
+	}
+}
