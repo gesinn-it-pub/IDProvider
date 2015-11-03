@@ -1,20 +1,6 @@
 <?php
 class IDProviderApi extends ApiQueryBase {
 
-    /**
-     * Constructor is optional. Only needed if we give
-     * this module properties a prefix (in this case we're using
-     * "ex" as the prefix for the module's properties.
-     * Query modules have the convention to use a property prefix.
-     * Base modules generally don't use a prefix, and as such don't
-     * need the constructor in most cases.
-     *
-     * @param ApiQuery $query
-     * @param string $moduleName
-     */
-	public function __construct( $query, $moduleName ) {
-		parent::__construct( $query, $moduleName, 'idp' );
-	}
 
     /**
      * Description of the allowed parameters
@@ -29,6 +15,9 @@ class IDProviderApi extends ApiQueryBase {
             'prefix' => array(
                 ApiBase::PARAM_TYPE => 'string',
             ),
+			'padding' => array(
+				ApiBase::PARAM_TYPE => 'integer',
+			),
             'wikipage' => array(
                 ApiBase::PARAM_TYPE => 'boolean',
             ),
@@ -43,20 +32,66 @@ class IDProviderApi extends ApiQueryBase {
 
 		$params = $this->extractRequestParams();
 
-        $prefix = $params['prefix'] ?: '';
-        $type = $params['type'] ?: 'randomid';
+        $id = null;
+        $error = null;
+
         $wikipage = $params['wikipage'] ?: false;
 
+        try {
+            $id = $this->getId($params);
+        } catch (Exception $e) {
+			$error = $e->getMessage();
+		}
 
-        $r = array(
-            'type' => $type,
-            'prefix' => $prefix,
-        );
+        // Build return array
+        if ($id && !$error) {
+			$response = array(
+                'id' => $id,
+            );
+        } else {
+			if (!$error) {
+				$error = 'Unspecified error.';
+			}
+            $response = array(
+                'error' => $error,
+            );
+        }
 
-
-
-		$this->getResult()->addValue( null, $this->getModuleName(), $r );
+		$this->getResult()->addValue( null, $this->getModuleName(), $response );
 	}
+
+	/**
+	 * Calls the corresponding provider function according to the given type
+	 *
+	 * @param $type
+	 * @param $prefix
+	 *
+	 * @return string
+	 *
+	 * @throws Exception
+	 */
+    public function getId($params) {
+
+		if (!isset($params['type'])) {
+			throw new Exception('No type declared');
+		}
+
+		$type = $params['type'];
+
+		// UUID Provider
+        if ($type === 'uuid') {
+			return $prefix . IDProviderFunctions::getUUID();
+
+		// Increment Provider
+		} else if ($type === 'increment') {
+			return IDProviderFunctions::getIncrement($params['prefix'], $params['padding']);
+
+		// No valid option
+        } else {
+            throw new Exception('Unknown type');
+        }
+
+    }
 
     /**
      * Some example queries

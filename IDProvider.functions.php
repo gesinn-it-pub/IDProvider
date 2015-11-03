@@ -3,32 +3,115 @@ class IDProviderFunctions {
 
 
     /**
-     * Returns a UUID
-     * @see http://stackoverflow.com/a/2040279
+     * Returns a UUID, using openssl random bytes
+	 *
+     * @see http://stackoverflow.com/a/15875555
      *
      * @return string
      */
     public static function getUUID() {
-        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            // 32 bits for "time_low"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
 
-            // 16 bits for "time_mid"
-            mt_rand( 0, 0xffff ),
+		$data = openssl_random_pseudo_bytes(16);
 
-            // 16 bits for "time_hi_and_version",
-            // four most significant bits holds version number 4
-            mt_rand( 0, 0x0fff ) | 0x4000,
+		$data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+		$data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
 
-            // 16 bits, 8 bits for "clk_seq_hi_res",
-            // 8 bits for "clk_seq_low",
-            // two most significant bits holds zero and one for variant DCE1.1
-            mt_rand( 0, 0x3fff ) | 0x8000,
+		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 
-            // 48 bits for "node"
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
-        );
     }
+
+
+	public static function getIncrement($prefix, $padding = 0) {
+
+		if (!$prefix) {
+			$prefix = '___MAIN___';
+		}
+
+		self::ensureIncrementTable();
+
+		$increment = self::calculateIncrement($prefix);
+		
+		$id = $increment;
+
+		if ($padding && $padding > 0) {
+			$id = str_pad($increment, $padding, '0', STR_PAD_LEFT);
+		}
+
+		if ($prefix !== '___MAIN___') {
+			$id = $prefix . $id;
+		}
+
+		return $id;
+	}
+
+	/**
+	 * This ensures the Increment Table exists
+	 * Will create it if it doesnt
+	 *
+	 * @throws DBUnexpectedError
+	 */
+	private static function ensureIncrementTable() {
+
+		$dbw = wfGetDB(DB_MASTER); // Get DB with read access
+
+		// Check if increment table exists, if not - create it
+		try {
+			$dbw->select('idprovider_increments', '*');
+		} catch (Exception $e) {
+			$fileName = dirname( __FILE__ ) . '/sql/IDProviderIncrementTable.sql';
+			$createTable = file_get_contents($fileName);
+			$dbw->query($createTable);
+			$dbw->commit();
+		}
+	}
+
+	private static function calculateIncrement($prefix) {
+
+		$dbw = wfGetDB(DB_MASTER); // Get DB with read access
+
+		$increment = null;
+
+		$dbw->begin();
+
+		$prefixIncrement = $dbw->select(
+			'idprovider_increments',
+			'increment',
+			array(
+				'prefix' => $prefix,
+			),
+			__METHOD__
+		);
+
+		if ($prefixIncrement->numRows() <= 0) {
+
+			$dbw->insert('idprovider_increments',
+				array(
+					'prefix' => $prefix,
+					'increment' => 1
+				)
+			);
+			$dbw->commit();
+			$increment = 1;
+		} else {
+			$increment =  $prefixIncrement->fetchRow()['increment'];
+
+		}
+
+		$dbw->update(
+			'idprovider_increments',
+			array(
+				'increment = increment + 1'
+			),
+			array(
+				'prefix' => $prefix,
+			)
+		);
+
+		$dbw->commit();
+
+		return $increment;
+
+	}
 
 
     /**
@@ -195,5 +278,19 @@ class IDProviderFunctions {
         }
         return $key;
     }
+
+
+
+	/**
+	 * Debug function that converts an object/array to a <pre> wrapped pretty printed JSON string
+	 *
+	 * @param $obj
+	 * @return string
+	 */
+	public static function toJSON($obj) {
+		header('Content-Type: application/json');
+		echo json_encode($obj, JSON_PRETTY_PRINT);
+		die();
+	}
 
 }
