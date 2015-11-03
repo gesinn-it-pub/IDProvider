@@ -19,50 +19,72 @@
  */
 
 
-//////////////////////////////////////////
-// VARIABLES                            //
-//////////////////////////////////////////
+if (function_exists('wfLoadExtension')) {
 
-$dir         = dirname( __FILE__ );
-$dirbasename = basename( $dir );
+	wfLoadExtension('IDProvider');
 
+	// Keep i18n globals so mergeMessageFileList.php doesn't break
+	$wgMessagesDirs['IDProvider'] = __DIR__ . '/i18n';
+//	$wgExtensionMessagesFiles['IDProviderAlias'] = __DIR__ . '/IDProvider.alias.php';
 
-//////////////////////////////////////////
-// CONFIG                               //
-//////////////////////////////////////////
-
-//$wgSubstitutorMinRand          = 1000000000;
-//$wgSubstitutorMaxRand          = 9999999999;
-//$wgSubstitutorRandStringLength = 12;
+	wfWarn(
+		'Deprecated PHP entry point used for the IDProvider extension. Please use wfLoadExtension("IDProvider"); instead, ' .
+		'see https://www.mediawiki.org/wiki/Extension_registration for more details.'
+	);
+	return;
 
 
-//////////////////////////////////////////
-// CREDITS                              //
-//////////////////////////////////////////
+} else {
 
-$wgExtensionCredits['other'][] = array(
-   'path'           => __FILE__,
-   'name'           => 'IDProvider',
-   'author'         => array('Simon Heimler'),
-   'version'        => '0.2.0',
-   'url'            => 'https://www.mediawiki.org/wiki/Extension:IDProvider',
-   'descriptionmsg' => 'idprovider-desc',
-   'license-name'   => 'MIT'
-);
+	// @deprecated extension loading (!)
 
 
+	//////////////////////////////////////////
+	// VARIABLES                            //
+	//////////////////////////////////////////
 
-//////////////////////////////////////////
-// LOAD FILES                           //
-//////////////////////////////////////////
+	$dir         = dirname( __FILE__ );
+	$dirbasename = basename( $dir );
 
-// Load Classes
-$wgAutoloadClasses['IDProviderHooks'] = $dir . '/IDProvider.hooks.php';
-$wgAutoloadClasses['IDProviderFunctions'] = $dir . '/IDProvider.functions.php';
-$wgAutoloadClasses['IDProviderApi'] = $dir . '/api/IDProviderApi.php';
 
-// Register hooks
-$wgHooks['PageContentSaveComplete'][] = 'IDProviderHooks::onPageContentSaveComplete';
+	//////////////////////////////////////////
+	// CONFIG                               //
+	//////////////////////////////////////////
 
-// Register API
-$wgAPIListModules['idprovider'] = 'IDProviderApi';
+	$wgSubstitutorMinRand          = 1000000000;
+	$wgSubstitutorMaxRand          = 9999999999;
+	$wgSubstitutorRandStringLength = 12;
+
+
+	//////////////////////////////////////////
+	// CREDITS                              //
+	//////////////////////////////////////////
+
+	$wgExtensionCredits['other'][] = array(
+		'path'           => __FILE__,
+		'name'           => 'IDProvider',
+		'author'         => array('Simon Heimler'),
+		'version'        => '0.2.0',
+		'url'            => 'https://www.mediawiki.org/wiki/Extension:IDProvider',
+		'descriptionmsg' => 'idprovider-desc',
+		'license-name'   => 'MIT'
+	);
+
+
+	//////////////////////////////////////////
+	// LOAD FILES                           //
+	//////////////////////////////////////////
+
+	// Load Classes
+	$wgAutoloadClasses['IDProviderHooks'] = $dir . '/IDProvider.hooks.php';
+	$wgAutoloadClasses['IDProviderFunctions'] = $dir . '/IDProvider.functions.php';
+	$wgAutoloadClasses['IDProviderApi'] = $dir . '/api/IDProviderApi.php';
+
+	// Register hooks
+	$wgHooks['PageContentSaveComplete'][] = 'IDProviderHooks::onPageContentSaveComplete';
+
+	// Register API
+	$wgAPIListModules['idprovider'] = 'IDProviderApi';
+
+
+}

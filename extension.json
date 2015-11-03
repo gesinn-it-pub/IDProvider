@@ -1,0 +1,24 @@
+{
+	"name": "IDProvider",
+	"version": "0.2.0",
+	"author": [
+		"Simon Heimler"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:IDProvider",
+	"descriptionmsg": "idprovider-desc",
+	"license-name": "MIT",
+	"type": "other",
+	"APIListModules": {
+		"idprovider": "IDProviderApi"
+	},
+	"AutoloadClasses": {
+		"IDProviderHooks": "IDProvider.hooks.php",
+		"IDProviderFunctions": "IDProvider.functions.php",
+		"IDProviderApi": "api/IDProviderApi.php"
+	},
+	"Hooks": {
+		"PageContentSaveComplete": [
+			"IDProviderHooks::onPageContentSaveComplete"
+		]
+	}
+}
