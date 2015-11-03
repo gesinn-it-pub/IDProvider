@@ -30,7 +30,7 @@ class IDProviderFunctions {
 		$type = $params['type'];
 		$prefix = $params['prefix'] ?: '';
 		$padding = $params['padding'] ?: 0;
-		$wikipage = $params['wikipage'] ?: false;
+		$wikipage = $params['wikipage'] ?: null;
 
 		$id = null;
 
@@ -53,18 +53,17 @@ class IDProviderFunctions {
 			$title = Title::newFromText($id);
 			$page = WikiPage::factory($title);
 
+			// @TODO: Alternative: Retry this recursively until it works.. ???
 			if ($page->exists()) {
 				throw new Exception('WikiPage with that title already exists!');
 			}
 		}
-
-
+		
 		if ($id) {
 			return $id;
 		} else {
 			throw new Exception('No valid ID was calculated!');
 		}
-
 
 	}
 
