@@ -2,6 +2,63 @@
 class IDProviderFunctions {
 
 
+	/**
+	 *
+	 *
+	 * @param [array] $params
+	 *
+	 * @return string|int
+	 *
+	 * @throws Exception
+	 */
+	public static function getId($params) {
+
+		if (!isset($params['type'])) {
+			throw new Exception('No type declared');
+		}
+
+		$type = $params['type'];
+		$prefix = $params['prefix'] ?: '';
+		$wikipage = $params['wikipage'] ?: false;
+
+		$id = null;
+
+
+		if ($type === 'uuid') { // UUID Provider
+
+			$id = $prefix . self::getUUID();
+
+
+		} else if ($type === 'increment') { // Increment Provider
+
+			$id = self::getIncrement($params['prefix'], $params['padding']);
+
+		} else { // No valid option
+			throw new Exception('Unknown type');
+		}
+
+		// If &wikipage=true, check if a page with the same name as the $id already exists
+		if ($wikipage) {
+
+			$title = Title::newFromText($id);
+			$page = WikiPage::factory($title);
+
+			if ($page->exists()) {
+				throw new Exception('WikiPage with that title already exists!');
+			}
+		}
+
+
+		if ($id) {
+			return $id;
+		} else {
+			throw new Exception('No ID was calculated!');
+		}
+
+
+	}
+
+
     /**
      * Returns a UUID, using openssl random bytes
 	 *
@@ -30,7 +87,7 @@ class IDProviderFunctions {
 		self::ensureIncrementTable();
 
 		$increment = self::calculateIncrement($prefix);
-		
+
 		$id = $increment;
 
 		if ($padding && $padding > 0) {
@@ -65,6 +122,14 @@ class IDProviderFunctions {
 		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param $prefix
+	 * @return int|null
+	 *
+	 * @throws DBUnexpectedError
+	 */
 	private static function calculateIncrement($prefix) {
 
 		$dbw = wfGetDB(DB_MASTER); // Get DB with read access
@@ -73,6 +138,7 @@ class IDProviderFunctions {
 
 		$dbw->begin();
 
+		// Get the row according to the $prefix
 		$prefixIncrement = $dbw->select(
 			'idprovider_increments',
 			'increment',
@@ -84,6 +150,7 @@ class IDProviderFunctions {
 
 		if ($prefixIncrement->numRows() <= 0) {
 
+			// If the row does not exist yet, create it first
 			$dbw->insert('idprovider_increments',
 				array(
 					'prefix' => $prefix,
@@ -92,20 +159,23 @@ class IDProviderFunctions {
 			);
 			$dbw->commit();
 			$increment = 1;
-		} else {
-			$increment =  $prefixIncrement->fetchRow()['increment'];
 
+		} else {
+			// Read the increment
+			$increment = $prefixIncrement->fetchRow()['increment'] + 1;
+
+			// Update the increment (+1)
+			$dbw->update(
+				'idprovider_increments',
+				array(
+					'increment = increment + 1'
+				),
+				array(
+					'prefix' => $prefix,
+				)
+			);
 		}
 
-		$dbw->update(
-			'idprovider_increments',
-			array(
-				'increment = increment + 1'
-			),
-			array(
-				'prefix' => $prefix,
-			)
-		);
 
 		$dbw->commit();
 

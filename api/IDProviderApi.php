@@ -35,10 +35,8 @@ class IDProviderApi extends ApiQueryBase {
         $id = null;
         $error = null;
 
-        $wikipage = $params['wikipage'] ?: false;
-
         try {
-            $id = $this->getId($params);
+            $id = IDProviderFunctions::getId($params);
         } catch (Exception $e) {
 			$error = $e->getMessage();
 		}
@@ -60,38 +58,6 @@ class IDProviderApi extends ApiQueryBase {
 		$this->getResult()->addValue( null, $this->getModuleName(), $response );
 	}
 
-	/**
-	 * Calls the corresponding provider function according to the given type
-	 *
-	 * @param $type
-	 * @param $prefix
-	 *
-	 * @return string
-	 *
-	 * @throws Exception
-	 */
-    public function getId($params) {
-
-		if (!isset($params['type'])) {
-			throw new Exception('No type declared');
-		}
-
-		$type = $params['type'];
-
-		// UUID Provider
-        if ($type === 'uuid') {
-			return $prefix . IDProviderFunctions::getUUID();
-
-		// Increment Provider
-		} else if ($type === 'increment') {
-			return IDProviderFunctions::getIncrement($params['prefix'], $params['padding']);
-
-		// No valid option
-        } else {
-            throw new Exception('Unknown type');
-        }
-
-    }
 
     /**
      * Some example queries

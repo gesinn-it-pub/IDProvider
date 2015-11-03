@@ -5,11 +5,11 @@
 -- Notes table
 CREATE TABLE /*_*/idprovider_increments (
 
-  -- Unique ID to identify each increment namespace
-  iid int unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  -- Unique ID to identify the prefix (namespace)
+  pid int unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT,
 
   -- Increment prefix name
-  prefix varchar(256) NOT NULL,
+  prefix varchar(1024) NOT NULL,
 
   -- Current increment number
   increment int unsigned NOT NULL default 0
