@@ -17,43 +17,54 @@ class IDProviderApi extends ApiQueryBase {
 	}
 
     /**
+     * Description of the allowed parameters
+     * @return array
+     */
+    public function getAllowedParams() {
+        return array(
+            'type' => array(
+                ApiBase::PARAM_TYPE => 'string',
+                ApiBase::PARAM_REQUIRED => true,
+            ),
+            'prefix' => array(
+                ApiBase::PARAM_TYPE => 'string',
+            ),
+            'wikipage' => array(
+                ApiBase::PARAM_TYPE => 'boolean',
+            ),
+        );
+    }
+
+
+    /**
      *
      */
 	public function execute() {
-		global $wgExampleFooStuff;
+
 		$params = $this->extractRequestParams();
 
-		$stuff = array();
+        $prefix = $params['prefix'] ?: '';
+        $type = $params['type'] ?: 'randomid';
+        $wikipage = $params['wikipage'] ?: false;
 
-        $stuff['randomString'] = IDProviderFunctions::getUUID();
-        $stuff['test'] = 'TEST';
 
-		// This is a filtered request, only show this key if it exists,
-		// (or none, if it doesn't exist)
-		if ( isset( $params['key'] ) ) {
-			$key = $params['key'];
-			if ( isset( $wgExampleFooStuff[$key] ) ) {
-				$stuff[$key] = $wgExampleFooStuff[$key];
-			}
+        $r = array(
+            'type' => $type,
+            'prefix' => $prefix,
+        );
 
-		// This is an unfiltered request, replace the array with the total
-		// set of properties instead.
-		} else {
-			$stuff = $wgExampleFooStuff;
-		}
 
-		$r = array( 'stuff' => $stuff );
+
 		$this->getResult()->addValue( null, $this->getModuleName(), $r );
 	}
 
-	public function getAllowedParams() {
-		return array(
-			'key' => array(
-				ApiBase::PARAM_TYPE => 'string',
-			),
-		);
-	}
-
+    /**
+     * Some example queries
+     *
+     * @TODO
+     *
+     * @return array
+     */
 	protected function getExamplesMessages() {
 		return array(
 			'action=query&list=example'
