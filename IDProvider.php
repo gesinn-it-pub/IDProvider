@@ -9,6 +9,8 @@
  * @TODO: Reintegrate String Substitution functionality
  * @TODO: Write Unit-Tests
  *
+ * Delete a specific prefix counter: DELETE FROM `idprovider_increments` WHERE  `prefix`='REQ';
+ *
  * @file
  * @ingroup Extensions
  * @package MediaWiki

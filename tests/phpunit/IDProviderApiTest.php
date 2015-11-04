@@ -19,7 +19,7 @@ class IDProviderApiTest extends ApiTestCase {
 		parent::tearDown();
 	}
 
-	public function testParseNonexistentPage() {
+	public function testIncrementApiRequest() {
 
 		$data = $this->doApiRequest(array(
 			'action' => 'query',

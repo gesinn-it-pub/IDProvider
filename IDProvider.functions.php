@@ -55,6 +55,7 @@ class IDProviderFunctions {
 
 			// @TODO: Alternative: Retry this recursively until it works.. ???
 			if ($page->exists()) {
+				return self::getId($params);
 				throw new Exception('WikiPage with that title already exists!');
 			}
 		}
