@@ -1,21 +1,18 @@
 <?php
-class IDProviderIncrementApi extends ApiBase {
+class IDProviderRandomApi extends ApiBase {
 
 	/**
 	 * Description of the allowed parameters
 	 * @return array
 	 */
 	public function getAllowedParams() {
-
 		$params = array(
-			'prefix' => array(
-				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_HELP_MSG => 'idp-increment-prefix',
-			),
-			'padding' => array(
-				ApiBase::PARAM_TYPE => 'integer',
-				ApiBase::PARAM_MIN => 0,
-				ApiBase::PARAM_HELP_MSG => 'idp-increment-padding',
+			'type' => array(
+				ApiBase::PARAM_TYPE => array(
+					'uuid',
+					'fakeid'
+				),
+				ApiBase::PARAM_REQUIRED => true,
 			),
 			'wikipage' => array(
 				ApiBase::PARAM_TYPE => 'boolean',
@@ -23,7 +20,7 @@ class IDProviderIncrementApi extends ApiBase {
 		);
 
 		foreach ($params as $name => $value ) {
-			$params[$name][ApiBase::PARAM_HELP_MSG] = "idp-increment-apiparam-$name";
+			$params[$name][ApiBase::PARAM_HELP_MSG] = "idp-random-apiparam-$name";
 		}
 
 		return $params;
@@ -39,12 +36,22 @@ class IDProviderIncrementApi extends ApiBase {
 		$error = null;
 
 		$params = $this->extractRequestParams();
-		$prefix = $params['prefix'] ?: '';
-		$padding = $params['padding'] ?: 0;
 
+		$type = $params['type'] ?: 'uuid';
 
 		try {
-			$id = IDProviderFunctions::getIncrement($prefix, $padding);
+
+			if ($type === 'uuid') {
+				$id = IDProviderFunctions::getUUID();
+
+			} else if ($type === 'fakeid') {
+				$id = IDProviderFunctions::getFakeId();
+
+			} else { // No valid option
+				throw new Exception('Unknown type');
+			}
+
+
 		} catch (Exception $e) {
 			$error = $e->getMessage();
 		}
@@ -59,7 +66,6 @@ class IDProviderIncrementApi extends ApiBase {
 			$this->getResult()->addValue( null, 'error', $error );
 		}
 	}
-
 
 	/**
 	 * Some example queries

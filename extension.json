@@ -9,13 +9,19 @@
 	"descriptionmsg": "idprovider-desc",
 	"license-name": "MIT",
 	"type": "other",
+    "APIModules": {
+      "idprovider-increment": "IDProviderIncrementApi",
+      "idprovider-random": "IDProviderRandomApi"
+    },
 	"APIListModules": {
 		"idprovider": "IDProviderApi"
 	},
 	"AutoloadClasses": {
 		"IDProviderHooks": "IDProvider.hooks.php",
 		"IDProviderFunctions": "IDProvider.functions.php",
-		"IDProviderApi": "api/IDProviderApi.php"
+		"IDProviderApi": "api/IDProviderApi.php",
+		"IDProviderIncrementApi": "api/IDProviderIncrementApi.php",
+		"IDProviderRandomApi": "api/IDProviderRandomApi.php"
 	},
     "MessagesDirs": {
       "IDProvider": [

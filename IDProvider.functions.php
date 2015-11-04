@@ -87,7 +87,12 @@ class IDProviderFunctions {
 
     }
 
-	public static function getIncrement($prefix, $padding = 0) {
+	/**
+	 * @param string $prefix
+	 * @param int $padding
+	 * @return int|null|string
+	 */
+	public static function getIncrement($prefix = '', $padding = 0) {
 
 		if (!$prefix) {
 			$prefix = '___MAIN___';
