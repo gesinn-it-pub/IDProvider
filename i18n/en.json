@@ -4,5 +4,11 @@
 			"Fannon"
 		]
 	},
-	"idprovider-desc": "A MediaWiki service extension that provides (unique) IDs in several ways"
+	"idprovider-desc": "A MediaWiki service extension that provides (unique) IDs in several ways",
+
+    "idp-random-apiparam-type": "Choose a random ID generation algorithm",
+    "idp-random-apiparam-wikipage": "Checks that the ID does not  already an existing wikipage",
+    "idp-increment-apiparam-prefix": "Prefix / namespace that comes before the increment. Each prefix gets it's own increment state.",
+    "idp-increment-apiparam-padding": "Minimum length of the generated increment number. Fills it with leading zeros. E.g. padding=5 results in 00001",
+    "idp-increment-apiparam-wikipage": "Checks that the ID does not  already an existing wikipage"
 }

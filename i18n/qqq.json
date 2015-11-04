@@ -4,5 +4,11 @@
 			"Fannon"
 		]
 	},
-	"idprovider-desc": "{{desc|name=Substitutor|url=https://www.mediawiki.org/wiki/Extension:Substitutor}}"
+	"idprovider-desc": "{{desc|name=Substitutor|url=https://www.mediawiki.org/wiki/Extension:Substitutor}}",
+
+    "idp-random-apiparam-type": "API parameter description",
+    "idp-random-apiparam-wikipage": "API parameter description",
+    "idp-increment-apiparam-prefix": "API parameter description",
+    "idp-increment-apiparam-padding": "API parameter description",
+    "idp-increment-apiparam-wikipage": "API parameter description"
 }
