@@ -180,10 +180,8 @@ class IDProviderFunctions {
 
 	}
 
-
-
 	/**
-	 * Checks if a wikipage with the following id/title already exists
+	 * Checks whether a WikiPage with the following id/title already exists
 	 *
 	 * @param $id
 	 * @return bool
@@ -202,6 +200,16 @@ class IDProviderFunctions {
 		}
 	}
 
+
+
+
+
+
+
+
+
+	// TODO: OLD Code
+	
 
 	/**
 	 * returns a random number between $wgSubstitutorMinRand and $wgSubstitutorMaxRand
