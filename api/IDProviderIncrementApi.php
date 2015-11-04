@@ -10,22 +10,27 @@ class IDProviderIncrementApi extends ApiBase {
 		$params = array(
 			'prefix' => array(
 				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_HELP_MSG => 'idp-increment-prefix',
+				ApiBase::PARAM_HELP_MSG => 'idp-apiparam-skipuniquetest',
+			),
+			'start' => array(
+				ApiBase::PARAM_TYPE => 'integer',
+				ApiBase::PARAM_MIN => 0,
 			),
 			'padding' => array(
 				ApiBase::PARAM_TYPE => 'integer',
 				ApiBase::PARAM_MIN => 0,
-				ApiBase::PARAM_HELP_MSG => 'idp-increment-padding',
 			),
-			'wikipage' => array(
+			'skipUniqueTest' => array(
 				ApiBase::PARAM_TYPE => 'boolean',
+				ApiBase::PARAM_HELP_MSG => 'idp-apiparam-skipuniquetest',
 			),
 		);
 
 		foreach ($params as $name => $value ) {
-			$params[$name][ApiBase::PARAM_HELP_MSG] = "idp-increment-apiparam-$name";
+			if (!isset($params[$name][ApiBase::PARAM_HELP_MSG])) {
+				$params[$name][ApiBase::PARAM_HELP_MSG] = "idp-increment-apiparam-" . strtolower($name);
+			}
 		}
-
 		return $params;
 	}
 

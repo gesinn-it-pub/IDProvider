@@ -41,7 +41,7 @@ if (function_exists('wfLoadExtension')) {
 
 } else {
 
-	// @deprecated extension loading (!)
+	// @deprecated legacy extension loading (MW <= 1.24)
 
 
 	//////////////////////////////////////////
@@ -83,14 +83,15 @@ if (function_exists('wfLoadExtension')) {
 	// Load Classes
 	$wgAutoloadClasses['IDProviderHooks'] = $dir . '/IDProvider.hooks.php';
 	$wgAutoloadClasses['IDProviderFunctions'] = $dir . '/IDProvider.functions.php';
-	$wgAutoloadClasses['IDProviderApi'] = $dir . '/api/IDProviderApi.php';
+	$wgAutoloadClasses['IDProviderIncrementApi'] = $dir . '/api/IDProviderIncrementApi.php';
+	$wgAutoloadClasses['IDProviderRandomApi'] = $dir . '/api/IDProviderRandomApi.php';
 
 	// Register hooks
 	$wgHooks['UnitTestsList'][] = 'IDProviderHooks::onUnitTestsList';
 	$wgHooks['PageContentSaveComplete'][] = 'IDProviderHooks::onPageContentSaveComplete';
 
-	// Register API
-	$wgAPIListModules['idprovider'] = 'IDProviderApi';
-
+	// Register APIs
+	$wgAPIModules['idprovider-increment'] = 'IDProviderIncrementApi';
+	$wgAPIModules['idprovider-random'] = 'IDProviderRandomApi';
 
 }

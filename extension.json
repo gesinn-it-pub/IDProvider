@@ -19,7 +19,6 @@
 	"AutoloadClasses": {
 		"IDProviderHooks": "IDProvider.hooks.php",
 		"IDProviderFunctions": "IDProvider.functions.php",
-		"IDProviderApi": "api/IDProviderApi.php",
 		"IDProviderIncrementApi": "api/IDProviderIncrementApi.php",
 		"IDProviderRandomApi": "api/IDProviderRandomApi.php"
 	},

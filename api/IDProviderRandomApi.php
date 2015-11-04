@@ -14,13 +14,20 @@ class IDProviderRandomApi extends ApiBase {
 				),
 				ApiBase::PARAM_REQUIRED => true,
 			),
-			'wikipage' => array(
+			'prefix' => array(
+				ApiBase::PARAM_TYPE => 'string',
+				ApiBase::PARAM_HELP_MSG => 'idp-apiparam-prefix',
+			),
+			'skipUniqueTest' => array(
 				ApiBase::PARAM_TYPE => 'boolean',
+				ApiBase::PARAM_HELP_MSG => 'idp-apiparam-skipuniquetest',
 			),
 		);
 
 		foreach ($params as $name => $value ) {
-			$params[$name][ApiBase::PARAM_HELP_MSG] = "idp-random-apiparam-$name";
+			if (!isset($params[$name][ApiBase::PARAM_HELP_MSG])) {
+				$params[$name][ApiBase::PARAM_HELP_MSG] = "idp-random-apiparam-" . strtolower($name);
+			}
 		}
 
 		return $params;
