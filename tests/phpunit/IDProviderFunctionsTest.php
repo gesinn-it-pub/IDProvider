@@ -6,14 +6,6 @@
  */
 class IDProviderFunctionsTest extends MediaWikiTestCase {
 
-	protected function setUp() {
-		parent::setUp();
-	}
-
-	protected function tearDown() {
-		parent::tearDown();
-	}
-
 	public function testUUID() {
 		$this->assertEquals(36, strlen(IDProviderFunctions::getUUID()), 'Generates UUIDs of the right length');
 	}

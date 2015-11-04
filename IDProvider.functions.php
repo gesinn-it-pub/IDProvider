@@ -181,10 +181,8 @@ class IDProviderFunctions {
 					'prefix' => $prefix,
 				)
 			);
+			$dbw->commit();
 		}
-
-
-		$dbw->commit();
 
 		return $increment;
 
