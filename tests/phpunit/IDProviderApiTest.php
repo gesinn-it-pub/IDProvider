@@ -15,6 +15,10 @@ class IDProviderApiTest extends ApiTestCase {
 		$this->doLogin();
 	}
 
+	protected function tearDown() {
+		parent::tearDown();
+	}
+
 	public function testParseNonexistentPage() {
 
 		$data = $this->doApiRequest(array(
