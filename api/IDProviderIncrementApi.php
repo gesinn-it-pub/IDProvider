@@ -12,11 +12,11 @@ class IDProviderIncrementApi extends ApiBase {
 				ApiBase::PARAM_TYPE => 'string',
 				ApiBase::PARAM_HELP_MSG => 'idp-apiparam-skipuniquetest',
 			),
-			'start' => array(
+			'padding' => array(
 				ApiBase::PARAM_TYPE => 'integer',
 				ApiBase::PARAM_MIN => 0,
 			),
-			'padding' => array(
+			'start' => array(
 				ApiBase::PARAM_TYPE => 'integer',
 				ApiBase::PARAM_MIN => 0,
 			),
@@ -26,11 +26,13 @@ class IDProviderIncrementApi extends ApiBase {
 			),
 		);
 
+		// Add missing i18 help messages
 		foreach ($params as $name => $value ) {
 			if (!isset($params[$name][ApiBase::PARAM_HELP_MSG])) {
 				$params[$name][ApiBase::PARAM_HELP_MSG] = "idp-increment-apiparam-" . strtolower($name);
 			}
 		}
+
 		return $params;
 	}
 
@@ -44,12 +46,14 @@ class IDProviderIncrementApi extends ApiBase {
 		$error = null;
 
 		$params = $this->extractRequestParams();
-		$prefix = $params['prefix'] ?: '';
-		$padding = $params['padding'] ?: 0;
 
+		$prefix = $params['prefix'] ?: '';
+		$start = $params['start'] ?: 0;
+		$padding = $params['padding'] ?: 0;
+		$skipUniqueTest = $params['skipUniqueTest'] ?: false;
 
 		try {
-			$id = IDProviderFunctions::getIncrement($prefix, $padding);
+			$id = IDProviderFunctions::getIncrement($prefix, $padding, $start, $skipUniqueTest);
 		} catch (Exception $e) {
 			$error = $e->getMessage();
 		}
@@ -65,7 +69,6 @@ class IDProviderIncrementApi extends ApiBase {
 		}
 	}
 
-
 	/**
 	 * Some example queries
 	 *
@@ -74,7 +77,7 @@ class IDProviderIncrementApi extends ApiBase {
 	protected function getExamplesMessages() {
 		return array(
 			'action=idprovider-increment&padding=8' => 'idp-increment-example-1',
-			'action=idprovider-increment&prefix=TestPrefix_&padding=5&wikipage=' => 'idp-increment-example-2'
+			'action=idprovider-increment&prefix=TestPrefix_&padding=5&skipUniqueTest=' => 'idp-increment-example-2'
 		);
 	}
 }

@@ -10,89 +10,13 @@
  */
 class IDProviderFunctions {
 
-
-	/**
-	 * This is the global ID providing entry point
-	 * It takes an associative array as its parameter, using the same options as the API
-	 *
-	 * @param array $params
-	 *
-	 * @return string|int
-	 *
-	 * @throws Exception
-	 */
-	public static function getId($params) {
-
-		if (!isset($params['type'])) {
-			throw new Exception('No type declared');
-		}
-
-		$type = $params['type'];
-		$prefix = $params['prefix'] ?: '';
-		$padding = $params['padding'] ?: 0;
-		$wikipage = $params['wikipage'] ?: null;
-
-		$id = null;
-
-		if ($type === 'uuid') {
-			$id = $prefix . self::getUUID();
-
-		} else if ($type === 'increment') {
-			$id = self::getIncrement($prefix, $padding);
-
-		} else if ($type === 'fakeid') {
-			$id = $prefix .  self::getFakeId();
-
-		} else { // No valid option
-			throw new Exception('Unknown type');
-		}
-
-		// If &wikipage=true, check if a page with the same name as the $id already exists
-		if ($wikipage) {
-
-			$title = Title::newFromText($id);
-			$page = WikiPage::factory($title);
-
-			// @TODO: Alternative: Retry this recursively until it works.. ???
-			if ($page->exists()) {
-				return self::getId($params);
-				throw new Exception('WikiPage with that title already exists!');
-			}
-		}
-
-		if ($id) {
-			return $id;
-		} else {
-			throw new Exception('No valid ID was calculated!');
-		}
-
-	}
-
-
-    /**
-     * Returns a UUID, using openssl random bytes
-	 *
-     * @see http://stackoverflow.com/a/15875555
-     *
-     * @return string
-     */
-    public static function getUUID() {
-
-		$data = openssl_random_pseudo_bytes(16);
-
-		$data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
-		$data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
-
-		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-
-    }
-
 	/**
 	 * @param string $prefix
 	 * @param int $padding
+	 *
 	 * @return int|null|string
 	 */
-	public static function getIncrement($prefix = '', $padding = 0) {
+	public static function getIncrement($prefix = '', $padding = 0, $start = 1, $skipUniqueTest = false) {
 
 		if (!$prefix) {
 			$prefix = '___MAIN___';
@@ -112,11 +36,19 @@ class IDProviderFunctions {
 			$id = $prefix . $id;
 		}
 
+		if (!$skipUniqueTest) {
+			if (!self::isUniqueId($id)) {
+				return getIncrement($prefix, $padding, $start, $skipUniqueTest);
+			}
+		}
+
 		return $id;
 	}
 
 	/**
 	 * This ensures the Increment Table exists
+	 *
+	 * @TODO: Move this to update.php ?
 	 *
 	 * @throws DBUnexpectedError
 	 */
@@ -134,6 +66,58 @@ class IDProviderFunctions {
 			$dbw->commit();
 		}
 	}
+
+
+	/**
+	 * Returns a UUID, using openssl random bytes
+	 *
+	 * @see http://stackoverflow.com/a/15875555
+	 *
+	 * @return string
+	 */
+	public static function getUUID($prefix = '', $skipUniqueTest = false) {
+
+		$data = openssl_random_pseudo_bytes(16);
+
+		$data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+		$data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+		$id = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+
+		if (!$skipUniqueTest) {
+			if (!self::isUniqueId($id)) {
+				return getUUID($prefix, $skipUniqueTest);
+			}
+		}
+
+		return $id;
+
+	}
+
+	/**
+	 * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
+	 *
+	 * This is achived through mixing a milli-timestamp (php uniqid();) with a random string
+	 *
+	 * @return string
+	 */
+	public static function getFakeId($prefix = '', $skipUniqueTest = false) {
+
+		// Generates a random string of length 1-2.
+		$id = base_convert(rand(0, 36^2), 10, 36);
+
+		// This will "compress" the uniqid (some sort of microtimestamp) to a more dense string
+		$id .= base_convert(uniqid(), 10, 36);
+
+		if (!$skipUniqueTest) {
+			if (!self::isUniqueId($id)) {
+				return getFakeId($prefix, $skipUniqueTest);
+			}
+		}
+
+		return $id;
+	}
+
 
 	/**
 	 * Returns the current increment +1, increments the increment of the used prefix
@@ -194,23 +178,28 @@ class IDProviderFunctions {
 
 	}
 
+
+
 	/**
-	 * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
+	 * Checks if a wikipage with the following id/title already exists
 	 *
-	 * This is achived through mixing a milli-timestamp (php uniqid();) with a random string
+	 * @param $id
+	 * @return bool
 	 *
-	 * @return string
+	 * @throws MWException
 	 */
-	public static function getFakeId() {
+	public static function isUniqueId($id) {
 
-		// Generates a random string of length 1-2.
-		$id = base_convert(rand(0, 36^2), 10, 36);
+		$title = Title::newFromText($id);
+		$page = WikiPage::factory($title);
 
-		// This will "compress" the uniqid (some sort of microtimestamp) to a more dense string
-		$id .= base_convert(uniqid(), 10, 36);
-
-		return $id;
+		if ($page->exists()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
+
 
 	/**
 	 * returns a random number between $wgSubstitutorMinRand and $wgSubstitutorMaxRand
