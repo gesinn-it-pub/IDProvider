@@ -5,9 +5,7 @@
  * * Through a PHP getter function
  * * Through wikitext string substitutions (@see http://mediawiki.org/wiki/Extension:IDProvider)
  *
- * @TODO: Seperate into different API query lists? (not every param is shared)
  * @TODO: Reintegrate String Substitution functionality
- * @TODO: Write Unit-Tests
  *
  * Delete a specific prefix counter: DELETE FROM `idprovider_increments` WHERE  `prefix`='REQ';
  *

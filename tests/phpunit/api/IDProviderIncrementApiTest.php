@@ -6,9 +6,9 @@
  * @group Database
  * @group medium
  *
- * @covers IDProviderApi
+ * @covers IDProviderIncrementApi
  */
-class IDProviderApiTest extends ApiTestCase {
+class IDProviderIncrementApiTest extends ApiTestCase {
 
 	protected function setUp() {
 		parent::setUp();
@@ -22,18 +22,15 @@ class IDProviderApiTest extends ApiTestCase {
 	public function testIncrementApiRequest() {
 
 		$data = $this->doApiRequest(array(
-			'action' => 'query',
-			'list' => 'idprovider',
-			'type' => 'increment',
+			'action' => 'idprovider-increment',
 			'prefix' => '___TEST___',
 			'padding' => 5,
 			'format' => 'json',
 		));
 
-		$this->assertArrayHasKey( 'idprovider', $data[0], 'returns api namespace');
-		$this->assertArrayHasKey( 'id', $data[0]['idprovider'], 'returns an ID');
+		$this->assertArrayHasKey( 'id', $data[0], 'returns an ID');
 
-		$id = $data[0]['idprovider']['id'];
+		$id = $data[0]['id'];
 
 		$this->assertContains('___TEST___', $id, 'Returned Increment includes the prefix');
 		$this->assertEquals(15, strlen($id), 'Generates Increments with namespace and padding of the right lengths');
