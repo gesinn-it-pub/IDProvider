@@ -5,12 +5,15 @@
  * * Through a PHP getter function
  * * Through wikitext string substitutions (@see http://mediawiki.org/wiki/Extension:IDProvider)
  *
- * @see http://mediawiki.org/wiki/Extension:IDProvider
+ * @TODO: Seperate into different API query lists? (not every param is shared)
+ * @TODO: Reintegrate String Substitution functionality
+ * @TODO: Write Unit-Tests
  *
  * @file
  * @ingroup Extensions
  * @package MediaWiki
  *
+ * @links http://mediawiki.org/wiki/Extension:IDProvider Documentation
  * @links https://github.com/gesinn-it/IDProvider/blob/master/README.md Documentation
  * @links https://github.com/gesinn-it/IDProvider Source code
  *
@@ -81,6 +84,7 @@ if (function_exists('wfLoadExtension')) {
 	$wgAutoloadClasses['IDProviderApi'] = $dir . '/api/IDProviderApi.php';
 
 	// Register hooks
+	$wgHooks['UnitTestsList'][] = 'IDProviderHooks::onUnitTestsList';
 	$wgHooks['PageContentSaveComplete'][] = 'IDProviderHooks::onPageContentSaveComplete';
 
 	// Register API

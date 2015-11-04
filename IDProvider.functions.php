@@ -58,7 +58,7 @@ class IDProviderFunctions {
 				throw new Exception('WikiPage with that title already exists!');
 			}
 		}
-		
+
 		if ($id) {
 			return $id;
 		} else {
@@ -111,7 +111,6 @@ class IDProviderFunctions {
 
 	/**
 	 * This ensures the Increment Table exists
-	 * Will create it if it doesnt
 	 *
 	 * @throws DBUnexpectedError
 	 */
@@ -131,7 +130,7 @@ class IDProviderFunctions {
 	}
 
 	/**
-	 *
+	 * Returns the current increment +1, increments the increment of the used prefix
 	 *
 	 * @param $prefix
 	 * @return int|null
@@ -221,10 +220,6 @@ class IDProviderFunctions {
 
 		global $wgIDProviderMinRandNumber;
 		global $wgIDProviderMaxRandNumber;
-
-		self::toJSON($wgIDProviderMinRandNumber);
-
-
 
 		if (!$min) {
 			$min = $wgIDProviderMinRandNumber;

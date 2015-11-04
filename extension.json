@@ -23,7 +23,10 @@
       ]
     },
 	"Hooks": {
-		"PageContentSaveComplete": [
+		"UnitTestsList": [
+			"IDProviderHooks::onUnitTestsList"
+		],
+      "PageContentSaveComplete": [
 			"IDProviderHooks::onPageContentSaveComplete"
 		]
 	},

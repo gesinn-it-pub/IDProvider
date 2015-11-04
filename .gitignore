@@ -1,2 +1,4 @@
 ## Directory-based project format:
 .idea/
+vendor/
+node_modules/

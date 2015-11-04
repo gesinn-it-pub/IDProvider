@@ -8,6 +8,11 @@
  */
 class IDProviderHooks {
 
+	public static function onUnitTestsList( &$files ) {
+		$files = array_merge( $files, glob( __DIR__ . '/tests/phpunit/*Test.php' ) );
+		return true;
+	}
+
     /**
      * Hook: After a wiki page is saved, look for strings to substitute
      * If there are some, a new revision will be made that contains the substitutions
