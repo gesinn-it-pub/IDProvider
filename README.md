@@ -11,7 +11,7 @@ following to the MediaWiki `composer.json` file and run the ``php composer.phar 
 ```json
 {
 	"require": {
-		"gesinn-it/id-provider": "~1.0"
+		"gesinn-it/id-provider": "~0.3.3"
 	}
 }
 ```

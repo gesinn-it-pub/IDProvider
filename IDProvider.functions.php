@@ -2,7 +2,7 @@
 /**
  * The actual IDProvider Functions
  *
- * They can be used programmatically through this class
+ * They can be used in a programmatic way through this class
  * Use the static getId function as the main entry point
  *
  * @file
@@ -45,6 +45,7 @@ class IDProviderFunctions {
 		return $id;
 	}
 
+
 	/**
 	 * This ensures the Increment Table exists
 	 *
@@ -72,6 +73,9 @@ class IDProviderFunctions {
 	 * Returns a UUID, using openssl random bytes
 	 *
 	 * @see http://stackoverflow.com/a/15875555
+	 *
+	 * @param string $prefix
+	 * @param bool|false $skipUniqueTest
 	 *
 	 * @return string
 	 */
@@ -163,6 +167,8 @@ class IDProviderFunctions {
 			// Read the increment
 			$increment = $prefixIncrement->fetchRow()['increment'] + 1;
 
+			// TODO: Implement $start increment
+
 			// Update the increment (+1)
 			$dbw->update(
 				'idprovider_increments',
@@ -209,7 +215,7 @@ class IDProviderFunctions {
 
 
 	// TODO: OLD Code
-	
+
 
 	/**
 	 * returns a random number between $wgSubstitutorMinRand and $wgSubstitutorMaxRand
