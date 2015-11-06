@@ -37,4 +37,18 @@ class IDProviderRandomApiTest extends ApiTestCase {
 
 	}
 
+	/**
+	 * Invalid Request
+	 *
+	 * @expectedException     		UsageException
+	 * @expectedExceptionMessage 	Unrecognized value for parameter 'type': notexisting
+	 */
+	public function testInvalidIncrementApiRequest() {
+
+		$this->doApiRequest(array(
+			'action' => 'idprovider-random',
+			'type' => 'notexisting',
+			'format' => 'json',
+		));
+	}
 }

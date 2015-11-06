@@ -49,22 +49,4 @@ class IDProviderFunctionsTest extends MediaWikiTestCase {
 		$this->assertTrue(count($increments) === count(array_unique($increments)), 'Increment values are unique');
 
 	}
-
-	public function testInvalidRequest() {
-
-		$res = IDProviderFunctions::getIncrement('___TEST___', 8);
-
-		$this->assertContains('___TEST___', $res, 'Returned Increment includes the prefix');
-		$this->assertEquals(18, strlen($res), 'Generates Increments with namespace and padding of the right lengths');
-
-		// Test that no duplicates are generated
-		$increments = array();
-		for ($i = 1; $i <= 16; $i++) {
-			$increments[] = IDProviderFunctions::getIncrement('___TEST___', 8);
-		}
-
-		$this->assertTrue(count($increments) === count(array_unique($increments)), 'Increment values are unique');
-
-	}
-
 }
