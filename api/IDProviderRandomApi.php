@@ -45,20 +45,11 @@ class IDProviderRandomApi extends ApiBase {
 		$prefix = $params['prefix'] ?: '';
 		$skipUniqueTest = $params['skipUniqueTest'] ?: false;
 
+
 		try {
 
-			if ($type === 'uuid') {
-				$id = IDProviderFunctions::getUUID($prefix, $skipUniqueTest);
-
-			} else if ($type === 'fakeid') {
-				$id = IDProviderFunctions::getFakeId($prefix, $skipUniqueTest);
-
-			} else { // No valid option
-				throw new Exception('Unknown type');
-			}
-
+			$id = IDProviderFunctions::getRandom($type, $prefix, $skipUniqueTest);
 			$this->getResult()->addValue( null, 'id', $id );
-
 
 		} catch (Exception $e) {
 			$error = array(

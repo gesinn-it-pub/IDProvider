@@ -9,7 +9,7 @@ CREATE TABLE /*_*/idprovider_increments (
   pid int unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT,
 
   -- Increment prefix name
-  prefix varchar(1024) NOT NULL,
+  prefix text,
 
   -- Current increment number
   increment int unsigned NOT NULL default 0

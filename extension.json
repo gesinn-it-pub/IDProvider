@@ -25,7 +25,9 @@
         "IDProviderIncrementApi": "api/IDProviderIncrementApi.php",
         "IDProviderRandomApi": "api/IDProviderRandomApi.php"
     },
-    
+    "ExtensionMessagesFiles": {
+        "IDProviderMagic": "IDProvider.i18n.magic.php"
+    },
     "MessagesDirs": {
         "IDProvider": [
             "i18n"
@@ -38,6 +40,9 @@
         ],
         "LoadExtensionSchemaUpdates": [
             "IDProviderHooks::onLoadExtensionSchemaUpdates"
+        ],
+        "ParserFirstCallInit": [
+          "IDProviderHooks::onParserFirstCallInit"
         ],
         "PageContentSaveComplete": [
             "IDProviderHooks::onPageContentSaveComplete"

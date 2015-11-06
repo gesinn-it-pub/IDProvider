@@ -27,6 +27,8 @@ class IDProviderFunctions {
 
 		if (!$prefix) {
 			$prefix = '___MAIN___';
+		} else {
+			$prefix = trim($prefix);
 		}
 
 		$increment = self::calculateIncrement($prefix);
@@ -43,11 +45,38 @@ class IDProviderFunctions {
 
 		if (!$skipUniqueTest) {
 			if (!self::isUniqueId($id)) {
-				return getIncrement($prefix, $padding, $start, $skipUniqueTest);
+				return self::getIncrement($prefix, $padding, $start, $skipUniqueTest);
 			}
 		}
 
 		return $id;
+	}
+
+
+	/**
+	 * Corresponds to the idprovider-random API usage
+	 *
+	 * @param string $type
+	 * @param string $prefix
+	 * @param bool|false $skipUniqueTest
+	 *
+	 * @return string
+	 */
+	public static function getRandom($type = 'uuid', $prefix = '', $skipUniqueTest = false) {
+
+		$type = trim($type);
+		$prefix = trim($prefix);
+
+		if ($type === 'uuid') {
+			return IDProviderFunctions::getUUID($prefix, $skipUniqueTest);
+
+		} else if ($type === 'fakeid') {
+			return IDProviderFunctions::getFakeId($prefix, $skipUniqueTest);
+		} else {
+			// Default to UUID
+			return IDProviderFunctions::getUUID($prefix, $skipUniqueTest);
+		}
+
 	}
 
 
@@ -63,6 +92,8 @@ class IDProviderFunctions {
 	 * @return string
 	 */
 	public static function getUUID($prefix = '', $skipUniqueTest = false) {
+
+		$prefix = trim($prefix);
 
 		$data = openssl_random_pseudo_bytes(16);
 
@@ -84,11 +115,16 @@ class IDProviderFunctions {
 	/**
 	 * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
 	 *
-	 * This is achived through mixing a milli-timestamp (php uniqid();) with a random string
+	 * This is achieved through mixing a milli-timestamp (php uniqid();) with a random string
+	 *
+	 * @param string $prefix
+	 * @param bool|false $skipUniqueTest
 	 *
 	 * @return string
 	 */
 	public static function getFakeId($prefix = '', $skipUniqueTest = false) {
+
+		$prefix = trim($prefix);
 
 		// Generates a random string of length 1-2.
 		$id = base_convert(rand(0, 36^2), 10, 36);
