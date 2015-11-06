@@ -39,9 +39,6 @@ class IDProviderRandomApi extends ApiBase {
 	 */
 	public function execute() {
 
-		$id = null;
-		$error = null;
-
 		$params = $this->extractRequestParams();
 
 		$type = $params['type'] ?: 'uuid';
@@ -60,18 +57,14 @@ class IDProviderRandomApi extends ApiBase {
 				throw new Exception('Unknown type');
 			}
 
+			$this->getResult()->addValue( null, 'id', $id );
+
 
 		} catch (Exception $e) {
-			$error = $e->getMessage();
-		}
-
-		// Build return array
-		if ($id && !$error) {
-			$this->getResult()->addValue( null, 'id', $id );
-		} else {
-			if (!$error) {
-				$error = 'Unspecified error.';
-			}
+			$error = array(
+				'code' => 'api_exception',
+				'info' => $e->getMessage(),
+			);
 			$this->getResult()->addValue( null, 'error', $error );
 		}
 	}

@@ -42,9 +42,6 @@ class IDProviderIncrementApi extends ApiBase {
 	 */
 	public function execute() {
 
-		$id = null;
-		$error = null;
-
 		$params = $this->extractRequestParams();
 
 		$prefix = $params['prefix'] ?: '';
@@ -54,17 +51,12 @@ class IDProviderIncrementApi extends ApiBase {
 
 		try {
 			$id = IDProviderFunctions::getIncrement($prefix, $padding, $start, $skipUniqueTest);
-		} catch (Exception $e) {
-			$error = $e->getMessage();
-		}
-
-		// Build return array
-		if ($id && !$error) {
 			$this->getResult()->addValue( null, 'id', $id );
-		} else {
-			if (!$error) {
-				$error = 'Unspecified error.';
-			}
+		} catch (Exception $e) {
+			$error = array(
+				'code' => 'api_exception',
+				'info' => $e->getMessage(),
+			);
 			$this->getResult()->addValue( null, 'error', $error );
 		}
 	}
