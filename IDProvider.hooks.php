@@ -102,11 +102,11 @@ class IDProviderHooks {
 
 	// OLD CODE @TODO: Reintegrate it
 
-    /**
-     * Hook: After a wiki page is saved, look for strings to substitute
-     * If there are some, a new revision will be made that contains the substitutions
-     */
-    public static function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $status ) {
+//    /**
+//     * Hook: After a wiki page is saved, look for strings to substitute
+//     * If there are some, a new revision will be made that contains the substitutions
+//     */
+//    public static function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $status ) {
 
 //        // Get all necessary variables
 //        $oldText  = $content->getContentHandler()->serializeContent($content);
@@ -134,7 +134,7 @@ class IDProviderHooks {
 //        };
 //
 //        return true;
-    }
+//    }
 
 
 	/**

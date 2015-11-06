@@ -87,7 +87,7 @@ if (function_exists('wfLoadExtension')) {
 
 	// Register hooks
 	$wgHooks['UnitTestsList'][] = 'IDProviderHooks::onUnitTestsList';
-	$wgHooks['PageContentSaveComplete'][] = 'IDProviderHooks::onPageContentSaveComplete';
+	$wgHooks['ParserFirstCallInit'][] = 'IDProviderHooks::onParserFirstCallInit';
 	$wgHooks['LoadExtensionSchemaUpdates'][] = 'IDProviderHooks::onLoadExtensionSchemaUpdates';
 
 	// Register APIs

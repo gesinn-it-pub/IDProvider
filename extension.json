@@ -43,9 +43,6 @@
         ],
         "ParserFirstCallInit": [
           "IDProviderHooks::onParserFirstCallInit"
-        ],
-        "PageContentSaveComplete": [
-            "IDProviderHooks::onPageContentSaveComplete"
         ]
 	},
 
