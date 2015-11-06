@@ -1,43 +1,49 @@
 {
-	"name": "IDProvider",
-	"version": "0.3.3",
-	"author": [
-		"Simon Heimler",
+    "name": "IDProvider",
+    "version": "0.3.3",
+    "author": [
+        "Simon Heimler",
         "Alexander Gesinn"
-	],
-	"url": "https://www.mediawiki.org/wiki/Extension:IDProvider",
-	"descriptionmsg": "idprovider-desc",
-	"license-name": "MIT",
-	"type": "other",
+    ],
+    "url": "https://github.com/gesinn-it/IDProvider",
+    "descriptionmsg": "idprovider-desc",
+    "license-name": "MIT",
+    "type": "other",
+    
     "APIModules": {
-      "idprovider-increment": "IDProviderIncrementApi",
-      "idprovider-random": "IDProviderRandomApi"
+        "idprovider-increment": "IDProviderIncrementApi",
+        "idprovider-random": "IDProviderRandomApi"
     },
-	"APIListModules": {
-		"idprovider": "IDProviderApi"
-	},
-	"AutoloadClasses": {
-		"IDProviderHooks": "IDProvider.hooks.php",
-		"IDProviderFunctions": "IDProvider.functions.php",
-		"IDProviderIncrementApi": "api/IDProviderIncrementApi.php",
-		"IDProviderRandomApi": "api/IDProviderRandomApi.php"
-	},
+    
+    "APIListModules": {
+        "idprovider": "IDProviderApi"
+    },
+    
+    "AutoloadClasses": {
+        "IDProviderHooks": "IDProvider.hooks.php",
+        "IDProviderFunctions": "IDProvider.functions.php",
+        "IDProviderIncrementApi": "api/IDProviderIncrementApi.php",
+        "IDProviderRandomApi": "api/IDProviderRandomApi.php"
+    },
+    
     "MessagesDirs": {
-      "IDProvider": [
-        "i18n"
-      ]
+        "IDProvider": [
+            "i18n"
+        ]
     },
-	"Hooks": {
-		"UnitTestsList": [
-			"IDProviderHooks::onUnitTestsList"
-		],
-      "PageContentSaveComplete": [
-			"IDProviderHooks::onPageContentSaveComplete"
-		]
+
+    "Hooks": {
+        "UnitTestsList": [
+            "IDProviderHooks::onUnitTestsList"
+        ],
+        "PageContentSaveComplete": [
+            "IDProviderHooks::onPageContentSaveComplete"
+        ]
 	},
+
     "config": {
-      "IDProviderMinRandNumber ": 1000000000,
-      "IDProviderMaxRandNumber ": 9999999999,
-      "IDProviderRandStringLength ": 12
+        "IDProviderMinRandNumber ": 1000000000,
+        "IDProviderMaxRandNumber ": 9999999999,
+        "IDProviderRandStringLength ": 12
     }
 }
