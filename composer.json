@@ -28,10 +28,7 @@
 
     },
     "scripts": {
-      "test": [
-        "parallel-lint . --exclude vendor",
-        "phpcs . -v --standard=vendor/mediawiki/mediawiki-codesniffer/MediaWiki --ignore=vendor/*,node_modules/* --extensions=php"
-      ]
+
     },
 	"autoload"   : {
 		"files": [
