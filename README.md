@@ -12,9 +12,52 @@ following to the MediaWiki `composer.json` file and run the ``php composer.phar 
 ```json
 {
 	"require": {
-		"gesinn-it/id-provider": "~0.3.3"
+		"gesinn-it/id-provider": "~0.5.2"
 	}
 }
 ```
 
 ## Usage
+### Though the API
+#### idprovider-increment
+```
+api.php?action=idprovider-increment
+api.php?action=idprovider-increment&prefix=Issue_&padding=8&skipUniqueTest=true
+```
+#### idprovider-random
+```
+api.php?action=idprovider-random
+api.php?action=idprovider-increment&type=fakeid&prefix=Issue_&skipUniqueTest=true
+```
+
+### Though a parser function
+Please note that every time the parser function is executed, it will generate ID.
+This is most likely not what you want!
+
+The use of the parser function is useful for auto setting unique Semantic Forms page titles.
+#### idprovider-increment
+```
+{{#idprovider-increment:}}
+{{#idprovider-increment: Issue_ }}
+{{#idprovider-increment:
+  |prefix=Issue_
+  |padding=5
+  |skipUniqueTest=true
+}}
+```
+#### idprovider-random
+```
+{{#idprovider-random: }}
+{{#idprovider-random: uuid}}
+{{#idprovider-random: fakeid}}
+{{#idprovider-random:
+  |prefix=uuid
+  |skipUniqueTest=true
+}}
+```
+
+### Within PHP
+```php
+IDProviderFunctions::getIncrement($prefix, $padding, $start, $skipUniqueTest);
+IDProviderFunctions::getIncrement('Issue_', 8);
+```
