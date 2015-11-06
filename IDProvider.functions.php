@@ -10,19 +10,24 @@
  */
 class IDProviderFunctions {
 
+
 	/**
+	 *
+	 *
 	 * @param string $prefix
 	 * @param int $padding
+	 * @param int $start
+	 * @param bool|false $skipUniqueTest
 	 *
 	 * @return int|null|string
+	 *
+	 * @throws Exception
 	 */
-	public static function getIncrement($prefix = '', $padding = 0, $start = 1, $skipUniqueTest = false) {
+	public static function getIncrement($prefix = '___MAIN___', $padding = 0, $start = 1, $skipUniqueTest = false) {
 
 		if (!$prefix) {
 			$prefix = '___MAIN___';
 		}
-
-		self::ensureIncrementTable();
 
 		$increment = self::calculateIncrement($prefix);
 
@@ -45,28 +50,6 @@ class IDProviderFunctions {
 		return $id;
 	}
 
-
-	/**
-	 * This ensures the Increment Table exists
-	 *
-	 * @TODO: Move this to update.php ?
-	 *
-	 * @throws DBUnexpectedError
-	 */
-	private static function ensureIncrementTable() {
-
-		$dbw = wfGetDB(DB_MASTER); // Get DB with read access
-
-		// Check if increment table exists, if not - create it
-		try {
-			$dbw->select('idprovider_increments', '*');
-		} catch (Exception $e) {
-			$fileName = dirname( __FILE__ ) . '/sql/IDProviderIncrementTable.sql';
-			$createTable = file_get_contents($fileName);
-			$dbw->query($createTable);
-			$dbw->commit();
-		}
-	}
 
 
 	/**
@@ -353,10 +336,31 @@ class IDProviderFunctions {
 //    }
 
 
+//	/**
+//	 * This ensures the Increment Table exists
+//	 *
+//	 * @throws DBUnexpectedError
+//	 */
+//	private static function ensureIncrementTable() {
+//
+//		$dbw = wfGetDB(DB_MASTER); // Get DB with read access
+//
+//		// Check if increment table exists, if not - create it
+//		try {
+//			$dbw->select('idprovider_increments', '*');
+//		} catch (Exception $e) {
+//			$fileName = dirname( __FILE__ ) . '/sql/IDProviderIncrementTable.sql';
+//			$createTable = file_get_contents($fileName);
+//			$dbw->query($createTable);
+//			$dbw->commit();
+//		}
+//	}
 
 
 
-    //////////////////////////////////////////
+
+
+	//////////////////////////////////////////
     // HELPER / CALLBACK FUNCTIONS          //
     //////////////////////////////////////////
 

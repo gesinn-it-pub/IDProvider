@@ -8,8 +8,20 @@
  */
 class IDProviderHooks {
 
+	/**
+	 * Adds this extension unit-tests
+	 */
 	public static function onUnitTestsList( &$files ) {
 		$files = array_merge( $files, glob( __DIR__ . '/tests/phpunit/*Test.php' ) );
+		return true;
+	}
+
+
+	/**
+	 * Registers the database schema additions
+	 */
+	public static function onLoadExtensionSchemaUpdates( $updater ) {
+		$updater->addExtensionTable('idprovider_increments', __DIR__ . '/sql/IDProviderIncrementTable.sql' );
 		return true;
 	}
 

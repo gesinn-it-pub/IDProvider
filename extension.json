@@ -36,6 +36,9 @@
         "UnitTestsList": [
             "IDProviderHooks::onUnitTestsList"
         ],
+        "LoadExtensionSchemaUpdates": [
+            "IDProviderHooks::onLoadExtensionSchemaUpdates"
+        ],
         "PageContentSaveComplete": [
             "IDProviderHooks::onPageContentSaveComplete"
         ]

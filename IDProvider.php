@@ -84,9 +84,11 @@ if (function_exists('wfLoadExtension')) {
 	$wgAutoloadClasses['IDProviderIncrementApi'] = $dir . '/api/IDProviderIncrementApi.php';
 	$wgAutoloadClasses['IDProviderRandomApi'] = $dir . '/api/IDProviderRandomApi.php';
 
+
 	// Register hooks
 	$wgHooks['UnitTestsList'][] = 'IDProviderHooks::onUnitTestsList';
 	$wgHooks['PageContentSaveComplete'][] = 'IDProviderHooks::onPageContentSaveComplete';
+	$wgHooks['LoadExtensionSchemaUpdates'][] = 'IDProviderHooks::onLoadExtensionSchemaUpdates';
 
 	// Register APIs
 	$wgAPIModules['idprovider-increment'] = 'IDProviderIncrementApi';
