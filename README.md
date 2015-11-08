@@ -57,7 +57,7 @@ Please note that you should avoid spaces within the parser functions if you use 
 {{#idprovider-random:uuid}}
 {{#idprovider-random:fakeid}}
 {{#idprovider-random:
-  |prefix=uuid
+  |type=uuid
   |skipUniqueTest=true
 }}
 ```
