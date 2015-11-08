@@ -18,7 +18,12 @@ following to the MediaWiki `composer.json` file and run the ``php composer.phar 
 ```
 
 ## Usage
-### Though the API
+There are three ID Provider available at the moment:
+* Increment (with or without prefix), e.g. Issue_00005
+* Random UUID, e.g. 550e8400-e29b-11d4-a716-446655440000
+* Random FakeID, e.g. HJ78tz
+
+### Through the API
 #### idprovider-increment
 ```
 api.php?action=idprovider-increment
@@ -30,7 +35,7 @@ api.php?action=idprovider-random
 api.php?action=idprovider-increment&type=fakeid&prefix=Issue_&skipUniqueTest=true
 ```
 
-### Though a parser function
+### Through a parser function
 Please note that every time the parser function is executed, it will generate ID.
 This is most likely not what you want!
 
