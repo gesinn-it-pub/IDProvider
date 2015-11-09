@@ -54,9 +54,9 @@ if (function_exists('wfLoadExtension')) {
 	// CONFIG                               //
 	//////////////////////////////////////////
 
-	$wgIDProviderMinRandNumber      = 1000000000;
-	$wgIDProviderMaxRandNumber      = 9999999999;
-	$wgIDProviderRandStringLength 	= 12;
+//	$wgIDProviderMinRandNumber      = 1000000000;
+//	$wgIDProviderMaxRandNumber      = 9999999999;
+//	$wgIDProviderRandStringLength 	= 12;
 
 
 	//////////////////////////////////////////
@@ -67,7 +67,7 @@ if (function_exists('wfLoadExtension')) {
 		'path'           => __FILE__,
 		'name'           => 'IDProvider',
 		'author'         => array('Simon Heimler'),
-		'version'        => '0.2.0',
+		'version'        => '0.6.0',
 		'url'            => 'https://www.mediawiki.org/wiki/Extension:IDProvider',
 		'descriptionmsg' => 'idprovider-desc',
 		'license-name'   => 'MIT'

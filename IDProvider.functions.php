@@ -20,7 +20,7 @@ class IDProviderFunctions {
 	 *
 	 * @throws Exception
 	 */
-	public static function getIncrement($params) {
+	public static function getIncrement($params = array()) {
 
 		// Defaults and escaping
 		$prefix = self::paramGet($params, 'prefix', '___MAIN___');
@@ -57,7 +57,7 @@ class IDProviderFunctions {
 	 *
 	 * @return string
 	 */
-	public static function getRandom($params) {
+	public static function getRandom($params = array()) {
 
 		// Defaults and escaping
 		$type = self::paramGet($params, 'type', 'uuid');
