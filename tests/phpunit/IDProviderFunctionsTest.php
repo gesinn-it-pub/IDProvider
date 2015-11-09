@@ -37,10 +37,10 @@ class IDProviderFunctionsTest extends MediaWikiTestCase {
 		$res = IDProviderFunctions::getRandom();
 		$this->assertEquals(36, strlen($res), 'Generates UUIDs of the right length');
 
-		$res2 = IDProviderFunctions::getRandom(array(
-			'type' => 'fakeid',
-			'prefix' => 'PREFIX_',
-		));
+	$res2 = IDProviderFunctions::getRandom(array(
+		'type' => 'fakeid',
+		'prefix' => 'PREFIX_',
+	));
 		$this->assertContains('PREFIX_', $res2, 'Returned fakeid includes the prefix');
 	}
 
