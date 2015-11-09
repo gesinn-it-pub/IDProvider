@@ -41,6 +41,11 @@ This is most likely not what you want!
 
 The use of the parser function is useful for auto setting unique Semantic Forms page titles.
 Please note that you should avoid spaces within the parser functions if you use it as a parameter of a Semantic Form info tag.
+```
+{{{info|create title=Create New Feature|edit title=Edit Feature|page name={{#idprovider-increment:Feature_|padding=5}} }}}
+```
+
+
 #### idprovider-increment
 ```
 {{#idprovider-increment:}}
