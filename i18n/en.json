@@ -6,7 +6,7 @@
 	},
 	"idprovider-desc": "A MediaWiki service extension that provides (unique) IDs in several ways",
 
-    "idp-apiparam-skipuniquetest": "Checks that the ID does not  already an existing wikipage",
+    "idp-apiparam-skipuniquetest": "Checks that the ID does not correspond to an already existing wikipage",
     "idp-apiparam-prefix": "Prefix / namespace that comes before the increment. Each prefix gets it's own increment state.",
 
     "idp-random-apiparam-type": "Choose a random ID generation algorithm",
