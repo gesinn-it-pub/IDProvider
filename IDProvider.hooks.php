@@ -9,7 +9,7 @@
 class IDProviderHooks {
 
 	/**
-	 * Adds this extension unit-tests
+	 * Adds extension specific unit-tests
 	 */
 	public static function onUnitTestsList( &$files ) {
 		$files = array_merge( $files, glob( __DIR__ . '/tests/phpunit/*Test.php' ) );
@@ -25,7 +25,6 @@ class IDProviderHooks {
 		return true;
 	}
 
-
 	/**
 	 * Register parser hooks
 	 *
@@ -40,7 +39,6 @@ class IDProviderHooks {
 		return true;
 	}
 
-
 	/**
 	 * Wrapper for the {{#idprovider-increment parser function
 	 *
@@ -52,19 +50,15 @@ class IDProviderHooks {
 	public static function incrementFunctionHook($parser, $main) {
 
 		$args = array_slice(func_get_args(), 2);
-		$opts = self::extractOptions($args);
+		$params = self::extractOptions($args);
 
+		// If the prefix is not set as key-value, but the first parameter is set
+		// Use it as prefix (short form)
 		if ($main) {
-			$prefix = trim($main);
-		} else {
-			$prefix = (isset($opts['prefix']) ? trim($opts['prefix']) : null);
+			$params['prefix'] = $main;
 		}
 
-		$padding = (isset($opts['padding']) ? $opts['padding'] : null);
-		$start = (isset($opts['start']) ? $opts['start'] : null);
-		$skipUniqueTest = (isset($opts['skipUniqueTest']) ? $opts['skipUniqueTest'] : null);
-
-		$id = IDProviderFunctions::getIncrement($prefix, $padding, $start, $skipUniqueTest);
+		$id = IDProviderFunctions::getIncrement($params);
 
 		return array($id, 'noparse' => true);
 	}
@@ -80,18 +74,15 @@ class IDProviderHooks {
 	public static function randomFunctionHook($parser, $main) {
 
 		$args = array_slice(func_get_args(), 2);
-		$opts = self::extractOptions($args);
+		$params = self::extractOptions($args);
 
-		if ($main) {
-			$type = trim($main);
-		} else {
-			$type = (isset($opts['type']) ? trim($opts['type']) : null);
+		// If the prefix is not set as key-value, but the first parameter is set
+		// Use it as prefix (short form)
+		if (!isset($params['type']) && $main) {
+			$params['type'] = $main;
 		}
 
-		$prefix = (isset($opts['prefix']) ? trim($opts['prefix']) : null);
-		$skipUniqueTest = (isset($opts['skipUniqueTest']) ? $opts['skipUniqueTest'] : null);
-
-		$id = IDProviderFunctions::getRandom($type, $prefix, $skipUniqueTest);
+		$id = IDProviderFunctions::getRandom($params);
 
 		return array($id, 'noparse' => true);
 	}

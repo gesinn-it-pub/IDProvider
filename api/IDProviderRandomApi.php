@@ -41,16 +41,9 @@ class IDProviderRandomApi extends ApiBase {
 
 		$params = $this->extractRequestParams();
 
-		$type = $params['type'] ?: 'uuid';
-		$prefix = $params['prefix'] ?: '';
-		$skipUniqueTest = $params['skipUniqueTest'] ?: false;
-
-
 		try {
-
-			$id = IDProviderFunctions::getRandom($type, $prefix, $skipUniqueTest);
+			$id = IDProviderFunctions::getRandom($params);
 			$this->getResult()->addValue( null, 'id', $id );
-
 		} catch (Exception $e) {
 			$error = array(
 				'code' => 'api_exception',

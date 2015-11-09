@@ -12,31 +12,28 @@ class IDProviderFunctions {
 
 
 	/**
+	 * Corresponds to the idprovider-increment API usage
 	 *
+	 * @param array $params	Associative array. See the API / Parser function for usage
 	 *
-	 * @param string $prefix
-	 * @param int $padding
-	 * @param int $start
-	 * @param bool|false $skipUniqueTest
-	 *
-	 * @return int|null|string
+	 * @return string|int
 	 *
 	 * @throws Exception
 	 */
-	public static function getIncrement($prefix = '___MAIN___', $padding = 0, $start = 1, $skipUniqueTest = false) {
+	public static function getIncrement($params) {
 
-		if (!$prefix) {
-			$prefix = '___MAIN___';
-		} else {
-			$prefix = trim($prefix);
-		}
+		// Defaults and escaping
+		$prefix = self::paramGet($params, 'prefix', '___MAIN___');
+		$padding = self::paramGet($params, 'padding', 1);
+		$skipUniqueTest = self::paramGet($params, 'skipUniqueTest', false);
 
-		$increment = self::calculateIncrement($prefix);
+		// TODO: Not implemented yet
+		$start = self::paramGet($params, 'start', 1);
 
-		$id = $increment;
+		$id = self::calculateIncrement($prefix);
 
 		if ($padding && $padding > 0) {
-			$id = str_pad($increment, $padding, '0', STR_PAD_LEFT);
+			$id = str_pad($id, $padding, '0', STR_PAD_LEFT);
 		}
 
 		if ($prefix !== '___MAIN___') {
@@ -45,7 +42,7 @@ class IDProviderFunctions {
 
 		if (!$skipUniqueTest) {
 			if (!self::isUniqueId($id)) {
-				return self::getIncrement($prefix, $padding, $start, $skipUniqueTest);
+				return self::getIncrement($params);
 			}
 		}
 
@@ -56,101 +53,39 @@ class IDProviderFunctions {
 	/**
 	 * Corresponds to the idprovider-random API usage
 	 *
-	 * @param string $type
-	 * @param string $prefix
-	 * @param bool|false $skipUniqueTest
+	 * @param array $params	Associative array. See the API / Parser function for usage
 	 *
 	 * @return string
 	 */
-	public static function getRandom($type = 'uuid', $prefix = '', $skipUniqueTest = false) {
+	public static function getRandom($params) {
 
-		$type = trim($type);
-		$prefix = trim($prefix);
+		// Defaults and escaping
+		$type = self::paramGet($params, 'type', 'uuid');
+		$prefix = self::paramGet($params, 'prefix', '');
+		$skipUniqueTest = self::paramGet($params, 'skipUniqueTest', false);
 
 		if ($type === 'uuid') {
-			return IDProviderFunctions::getUUID($prefix, $skipUniqueTest);
-
+			return IDProviderFunctions::calculateUUID($prefix, $skipUniqueTest);
 		} else if ($type === 'fakeid') {
-			return IDProviderFunctions::getFakeId($prefix, $skipUniqueTest);
+			return IDProviderFunctions::calculateFakeId($prefix, $skipUniqueTest);
 		} else {
 			// Default to UUID
-			return IDProviderFunctions::getUUID($prefix, $skipUniqueTest);
+			return IDProviderFunctions::calculateUUID($prefix, $skipUniqueTest);
 		}
 
-	}
-
-
-
-	/**
-	 * Returns a UUID, using openssl random bytes
-	 *
-	 * @see http://stackoverflow.com/a/15875555
-	 *
-	 * @param string $prefix
-	 * @param bool|false $skipUniqueTest
-	 *
-	 * @return string
-	 */
-	public static function getUUID($prefix = '', $skipUniqueTest = false) {
-
-		$prefix = trim($prefix);
-
-		$data = openssl_random_pseudo_bytes(16);
-
-		$data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
-		$data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
-
-		$id = $prefix . vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-
-		if (!$skipUniqueTest) {
-			if (!self::isUniqueId($id)) {
-				return getUUID($prefix, $skipUniqueTest);
-			}
-		}
-
-		return $id;
-
-	}
-
-	/**
-	 * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
-	 *
-	 * This is achieved through mixing a milli-timestamp (php uniqid();) with a random string
-	 *
-	 * @param string $prefix
-	 * @param bool|false $skipUniqueTest
-	 *
-	 * @return string
-	 */
-	public static function getFakeId($prefix = '', $skipUniqueTest = false) {
-
-		$prefix = trim($prefix);
-
-		// Generates a random string of length 1-2.
-		$id = base_convert(rand(0, 36^2), 10, 36);
-
-		// This will "compress" the uniqid (some sort of microtimestamp) to a more dense string
-		$id .= base_convert(uniqid(), 10, 36);
-
-		$id = $prefix . $id;
-
-		if (!$skipUniqueTest) {
-			if (!self::isUniqueId($id)) {
-				return getFakeId($prefix, $skipUniqueTest);
-			}
-		}
-
-		return $id;
 	}
 
 
 	/**
 	 * Returns the current increment +1, increments the increment of the used prefix
 	 *
-	 * @param $prefix
-	 * @return int|null
+	 * @TODO: Support the start parameter
+	 *
+	 * @param string $prefix
+	 * @return int
 	 *
 	 * @throws DBUnexpectedError
+	 * @throws Exception
 	 */
 	private static function calculateIncrement($prefix) {
 
@@ -183,10 +118,9 @@ class IDProviderFunctions {
 			$increment = 1;
 
 		} else {
+
 			// Read the increment
 			$increment = $prefixIncrement->fetchRow()['increment'] + 1;
-
-			// TODO: Implement $start increment
 
 			// Update the increment (+1)
 			$dbw->update(
@@ -201,8 +135,74 @@ class IDProviderFunctions {
 			$dbw->commit();
 		}
 
+		if (!$increment) {
+			throw new Exception('Could not calculate the increment!');
+		}
+
 		return $increment;
 
+	}
+
+	/**
+	 * Returns a UUID, using openssl random bytes
+	 *
+	 * @see http://stackoverflow.com/a/15875555
+	 *
+	 * @param string $prefix
+	 * @param bool|false $skipUniqueTest
+	 *
+	 * @return string
+	 */
+	public static function calculateUUID($prefix = '', $skipUniqueTest = false) {
+
+		$prefix = trim($prefix);
+
+		$data = openssl_random_pseudo_bytes(16);
+
+		$data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+		$data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+		$id = $prefix . vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+
+		if (!$skipUniqueTest) {
+			if (!self::isUniqueId($id)) {
+				return getUUID($prefix, $skipUniqueTest);
+			}
+		}
+
+		return $id;
+
+	}
+
+	/**
+	 * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
+	 *
+	 * This is achieved through mixing a milli-timestamp (php uniqid();) with a random string
+	 *
+	 * @param string $prefix
+	 * @param bool|false $skipUniqueTest
+	 *
+	 * @return string
+	 */
+	public static function calculateFakeId($prefix = '', $skipUniqueTest = false) {
+
+		$prefix = trim($prefix);
+
+		// Generates a random string of length 1-2.
+		$id = base_convert(rand(0, 36^2), 10, 36);
+
+		// This will "compress" the uniqid (some sort of microtimestamp) to a more dense string
+		$id .= base_convert(uniqid(), 10, 36);
+
+		$id = $prefix . $id;
+
+		if (!$skipUniqueTest) {
+			if (!self::isUniqueId($id)) {
+				return getFakeId($prefix, $skipUniqueTest);
+			}
+		}
+
+		return $id;
 	}
 
 	/**
@@ -224,17 +224,6 @@ class IDProviderFunctions {
 			return true;
 		}
 	}
-
-
-
-
-
-
-
-
-
-	// TODO: OLD Code
-
 
 	/**
 	 * returns a random number between $wgSubstitutorMinRand and $wgSubstitutorMaxRand
@@ -286,10 +275,7 @@ class IDProviderFunctions {
 	}
 
 
-
-	// Old Substitutor Functions
-	// TODO: Reimplement them
-
+	// TODO: Old Substitutor Callback Functions
 
 //    /**
 //    * Substitutes ___TIMESTAMP___ for the current UNIX timestamp
@@ -372,33 +358,30 @@ class IDProviderFunctions {
 //    }
 
 
-//	/**
-//	 * This ensures the Increment Table exists
-//	 *
-//	 * @throws DBUnexpectedError
-//	 */
-//	private static function ensureIncrementTable() {
-//
-//		$dbw = wfGetDB(DB_MASTER); // Get DB with read access
-//
-//		// Check if increment table exists, if not - create it
-//		try {
-//			$dbw->select('idprovider_increments', '*');
-//		} catch (Exception $e) {
-//			$fileName = dirname( __FILE__ ) . '/sql/IDProviderIncrementTable.sql';
-//			$createTable = file_get_contents($fileName);
-//			$dbw->query($createTable);
-//			$dbw->commit();
-//		}
-//	}
-
-
 
 
 
 	//////////////////////////////////////////
-    // HELPER / CALLBACK FUNCTIONS          //
+    // HELPER FUNCTIONS                     //
     //////////////////////////////////////////
+
+	/**
+	 * Helper function, that safely checks whether an array key exists
+	 * and returns the trimmed value. If it doesn't exist, returns $default or null
+	 *
+	 * @param array $params
+	 * @param string $key
+	 * @param mixed $default
+	 *
+	 * @return mixed
+	 */
+	public static function paramGet($params, $key, $default = null) {
+		if (isset($params[$key])) {
+			return trim($params[$key]);
+		} else {
+			return $default;
+		}
+	}
 
 	/**
 	 * Debug function that converts an object/array to a <pre> wrapped pretty printed JSON string

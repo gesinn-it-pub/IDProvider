@@ -15,21 +15,21 @@ class IDProviderFunctionsTest extends MediaWikiTestCase {
 	}
 
 	public function testUUID() {
-		$res = IDProviderFunctions::getUUID();
+		$res = IDProviderFunctions::calculateUUID();
 		$this->assertEquals(36, strlen($res), 'Generates UUIDs of the right length');
 
-		$res2 = IDProviderFunctions::getUUID('PREFIX_');
+		$res2 = IDProviderFunctions::calculateUUID('PREFIX_');
 		$this->assertEquals(43, strlen($res2), 'Generates prefixed UUIDs of the right length');
 
-		$res3 = IDProviderFunctions::getUUID(false, true);
+		$res3 = IDProviderFunctions::calculateUUID(false, true);
 		$this->assertEquals(36, strlen($res3), 'Generates UUIDs with $skipUniqueTest enabled');
 	}
 
 	public function testFakeId() {
-		$res = IDProviderFunctions::getFakeId();
+		$res = IDProviderFunctions::calculateFakeId();
 		$this->assertGreaterThan(5, strlen($res), 'Generates FakeIds of a minimal length');
 
-		$res2 = IDProviderFunctions::getFakeId('PREFIX_');
+		$res2 = IDProviderFunctions::calculateFakeId('PREFIX_');
 		$this->assertContains('PREFIX_', $res2, 'Returned random id includes the prefix');
 	}
 

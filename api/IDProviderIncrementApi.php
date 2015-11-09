@@ -44,13 +44,8 @@ class IDProviderIncrementApi extends ApiBase {
 
 		$params = $this->extractRequestParams();
 
-		$prefix = $params['prefix'] ?: '';
-		$start = $params['start'] ?: 0;
-		$padding = $params['padding'] ?: 0;
-		$skipUniqueTest = $params['skipUniqueTest'] ?: false;
-
 		try {
-			$id = IDProviderFunctions::getIncrement($prefix, $padding, $start, $skipUniqueTest);
+			$id = IDProviderFunctions::getIncrement($params);
 			$this->getResult()->addValue( null, 'id', $id );
 		} catch (Exception $e) {
 			$error = array(
