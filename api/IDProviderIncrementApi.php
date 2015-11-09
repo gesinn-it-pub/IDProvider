@@ -10,7 +10,7 @@ class IDProviderIncrementApi extends ApiBase {
 		$params = array(
 			'prefix' => array(
 				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_HELP_MSG => 'idp-apiparam-skipuniquetest',
+				ApiBase::PARAM_HELP_MSG => 'idp-apiparam-prefix',
 			),
 			'padding' => array(
 				ApiBase::PARAM_TYPE => 'integer',
