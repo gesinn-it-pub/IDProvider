@@ -16,10 +16,10 @@ class IDProviderIncrementApi extends ApiBase {
 				ApiBase::PARAM_TYPE => 'integer',
 				ApiBase::PARAM_MIN => 0,
 			),
-			'start' => array(
-				ApiBase::PARAM_TYPE => 'integer',
-				ApiBase::PARAM_MIN => 0,
-			),
+//			'start' => array(
+//				ApiBase::PARAM_TYPE => 'integer',
+//				ApiBase::PARAM_MIN => 0,
+//			),
 			'skipUniqueTest' => array(
 				ApiBase::PARAM_TYPE => 'boolean',
 				ApiBase::PARAM_HELP_MSG => 'idp-apiparam-skipuniquetest',
