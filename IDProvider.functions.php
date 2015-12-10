@@ -120,7 +120,8 @@ class IDProviderFunctions {
 		} else {
 
 			// Read the increment
-			$increment = $prefixIncrement->fetchRow()['increment'] + 1;
+			$incrementRow = $prefixIncrement->fetchRow();
+			$increment = $incrementRow['increment'] + 1;
 
 			// Update the increment (+1)
 			$dbw->update(
