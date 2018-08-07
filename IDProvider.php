@@ -66,8 +66,8 @@ if (function_exists('wfLoadExtension')) {
 	$wgExtensionCredits['other'][] = array(
 		'path'           => __FILE__,
 		'name'           => 'IDProvider',
-		'author'         => array('Simon Heimler'),
-		'version'        => '0.6.0',
+		'author'         => array('Simon Heimler', 'Alexander Gesinn'),
+		'version'        => '1.1.0-alpha',
 		'url'            => 'https://www.mediawiki.org/wiki/Extension:IDProvider',
 		'descriptionmsg' => 'idprovider-desc',
 		'license-name'   => 'MIT'
