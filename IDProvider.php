@@ -67,7 +67,7 @@ if (function_exists('wfLoadExtension')) {
 		'path'           => __FILE__,
 		'name'           => 'IDProvider',
 		'author'         => array('Simon Heimler', 'Alexander Gesinn'),
-		'version'        => '1.1.0-alpha',
+		'version'        => '1.1.0',
 		'url'            => 'https://www.mediawiki.org/wiki/Extension:IDProvider',
 		'descriptionmsg' => 'idprovider-desc',
 		'license-name'   => 'MIT'
