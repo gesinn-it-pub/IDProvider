@@ -8,7 +8,8 @@
  * @file
  * @ingroup Extensions
  */
-class IDProviderFunctions {
+ 
+ class IDProviderFunctions {
 
 
 	/**
@@ -89,11 +90,19 @@ class IDProviderFunctions {
 	 */
 	private static function calculateIncrement($prefix) {
 
-		$dbw = wfGetDB(DB_MASTER); // Get DB with read access
-
 		$increment = null;
 
-		$dbw->begin();
+        // Get DB with read access
+        // > MW 1.27
+        if ( class_exists( '\MediaWiki\MediaWikiServices' ) && method_exists( '\MediaWiki\MediaWikiServices', 'getDBLoadBalancerFactory' ) ) {
+            $factory = \MediaWiki\MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+            $mainLB = $factory->getMainLB();
+            $dbw = $mainLB->getConnectionRef( DB_MASTER );
+            $factory->beginMasterChanges(__METHOD__);
+        } else {        
+            $dbw = wfGetDB(DB_MASTER);
+            $dbw->begin();
+        }
 
 		// Get the row according to the $prefix
 		$prefixIncrement = $dbw->select(
@@ -114,7 +123,12 @@ class IDProviderFunctions {
 					'increment' => 1
 				)
 			);
-			$dbw->commit();
+            // > MW 1.27
+            if ( class_exists( '\MediaWiki\MediaWikiServices' ) && method_exists( '\MediaWiki\MediaWikiServices', 'getDBLoadBalancerFactory' ) ) {
+                $factory->commitMasterChanges(__METHOD__); 
+            } else {
+            	$dbw->commit();
+            }
 			$increment = 1;
 
 		} else {
@@ -133,9 +147,14 @@ class IDProviderFunctions {
 					'prefix' => $prefix,
 				)
 			);
-			$dbw->commit();
-		}
-
+            // > MW 1.27
+            if ( class_exists( '\MediaWiki\MediaWikiServices' ) && method_exists( '\MediaWiki\MediaWikiServices', 'getDBLoadBalancerFactory' ) ) {
+                $factory->commitMasterChanges(__METHOD__); 
+            } else {
+            	$dbw->commit();
+            }
+		}     
+        
 		if (!$increment) {
 			throw new Exception('Could not calculate the increment!');
 		}
