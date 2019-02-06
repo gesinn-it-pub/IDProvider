@@ -60,6 +60,10 @@ class IDProviderHooks {
 
 		$id = IDProviderFunctions::getIncrement($params);
 
+		// Remove "mw-parser-output" wrapper for mw >= 1.30
+		$opt = $parser->getOptions();
+		if( method_exists( $opt, 'setOption' ) ) $opt->setOption('wrapclass', false);
+		
 		return array($id, 'noparse' => true);
 	}
 
@@ -83,6 +87,10 @@ class IDProviderHooks {
 		}
 
 		$id = IDProviderFunctions::getRandom($params);
+		
+		// Remove "mw-parser-output" wrapper for mw >= 1.30
+		$opt = $parser->getOptions();
+		if( method_exists( $opt, 'setOption' ) ) $opt->setOption('wrapclass', false);
 
 		return array($id, 'noparse' => true);
 	}
