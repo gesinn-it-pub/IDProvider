@@ -26,7 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          path: ${{ MW_EXT_PATH }}
+          path: ${{ env.MW_EXT_PATH }}
 
       - name: Set Composer minimum-stability dev
         uses: php-actions/composer@v6
