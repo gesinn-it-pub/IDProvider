@@ -17,16 +17,24 @@ jobs:
     container: mediawiki:${{ matrix.mediawiki_version }}
 
     env:
+      EXT_NAME: IDProvider
       COMPOSER_VERSION: 1
       MW_INST_PATH: /var/www/html
       MW_DB_PATH: /var/www/data
       MW_EXT_PATH: /var/www/html/extensions
 
     steps:
-      - name: Checkout
+      - name: Checkout Extension
         uses: actions/checkout@v2
         with:
-          path: ${{ env.MW_EXT_PATH }}
+          path: ${{ env.EXT_NAME }}
+
+      # Setting actions/checkout@v2 path to env.MW_EXT_PATH fails with "Repository path '/var/www/html/extensions' is not under ..."
+      # See also open PR https://github.com/actions/checkout/pull/388
+      - name: Move Extension
+        run: |
+          mkdir -p ${{ MW_EXT_PATH }}
+          mv ${{ env.EXT_NAME }} ${{ MW_EXT_PATH }}
 
       - name: Set Composer minimum-stability dev
         uses: php-actions/composer@v6
