@@ -18,15 +18,23 @@ jobs:
 
     env:
       COMPOSER_VERSION: 1
+      MW_INST_PATH: /var/www/html
+      MW_DB_PATH: /var/www/data
+      MW_EXT_PATH: /var/www/html/extensions
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ${{ MW_EXT_PATH }}
 
-      - name: Get composer
+      - name: Set Composer minimum-stability dev
         uses: php-actions/composer@v6
         with:
+          command: config minimum-stability dev
           dev: yes
-          version: 1
+          version: ${{ env.COMPOSER_VERSION }}
+          args: --working-dir ${{ env.MW_INST_PATH }}
 
       - name: Composer version
         run: |
