@@ -44,7 +44,7 @@ jobs:
           php ${{ env.MW_INST_PATH }}/maintenance/install.php
           --dbtype=sqlite
           --dbname=wiki
-          --pass=pWd123456
+          --pass=Password123456
           --scriptpath=""
           --dbpath=${{ env.MW_DB_PATH }}
           --server="http://localhost:8000"
@@ -75,3 +75,8 @@ jobs:
           tail -n5 ${{ env.MW_INST_PATH }}/LocalSettings.php
           php ${{ env.MW_INST_PATH }}/maintenance/update.php --quick
 
+      - name: Run Tests
+        run: >
+          php ${{ env.MW_INST_PATH }}/tests/phpunit/phpunit.php
+          --group ${{ env.EXT_NAME }}
+          --testdox
