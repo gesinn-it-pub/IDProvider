@@ -1,4 +1,6 @@
 # IDProvider
+![CI](https://github.com/gesinn-it/IDProvider/actions/workflows/main.yml/badge.svg)
+
 IDProvider is an extension to MediaWiki that provides (unique) IDs using different ID algorithms.
 
 ## Documentation
