@@ -8,7 +8,8 @@
  *
  * @covers IDProviderRandomApi
  */
-use UsageException;
+
+use MWException;
 
 class IDProviderRandomApiTest extends ApiTestCase {
 
@@ -22,20 +23,19 @@ class IDProviderRandomApiTest extends ApiTestCase {
 	}
 
 	public function testIncrementApiRequest() {
-
-		$data = $this->doApiRequest(array(
+		$data = $this->doApiRequest( [
 			'action' => 'idprovider-random',
-			'type' => 'uuid',
+			'type'   => 'uuid',
 			'prefix' => '___TEST___',
 			'format' => 'json',
-		));
+		] );
 
-		$this->assertArrayHasKey( 'id', $data[0], 'returns an ID');
+		$this->assertArrayHasKey( 'id', $data[0], 'returns an ID' );
 
 		$id = $data[0]['id'];
 
-		$this->assertContains('___TEST___', $id, 'Returned UUID includes the prefix');
-		$this->assertEquals(46, strlen($id), 'Generates UUIDs with namespace and padding of the right lengths');
+		$this->assertContains( '___TEST___', $id, 'Returned UUID includes the prefix' );
+		$this->assertEquals( 46, strlen( $id ), 'Generates UUIDs with namespace and padding of the right lengths' );
 
 	}
 
@@ -43,13 +43,11 @@ class IDProviderRandomApiTest extends ApiTestCase {
 	 * Invalid Request
 	 */
 	public function testInvalidIncrementApiRequest() {
-
-		$this->doApiRequest(array(
+		$this->expectException( MWException::class );
+		$this->doApiRequest( [
 			'action' => 'idprovider-random',
-			'type' => 'notexisting',
+			'type'   => 'notexisting',
 			'format' => 'json',
-		));
-
-		$this->expectException( UsageException );
+		] );
 	}
 }
