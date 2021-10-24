@@ -48,7 +48,7 @@ jobs:
           --scriptpath=""
           --dbpath=${{ env.MW_DB_PATH }}
           --server="http://localhost:8000"
-          ${{ env.extension }}-test WikiSysop
+          ${{ env.EXT_NAME }}-test WikiSysop
 
       - name: Checkout Extension
         uses: actions/checkout@v2
