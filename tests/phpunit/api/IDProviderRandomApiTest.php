@@ -8,6 +8,8 @@
  *
  * @covers IDProviderRandomApi
  */
+use UsageException;
+
 class IDProviderRandomApiTest extends ApiTestCase {
 
 	protected function setUp() {
@@ -39,9 +41,6 @@ class IDProviderRandomApiTest extends ApiTestCase {
 
 	/**
 	 * Invalid Request
-	 *
-	 * @expectedException     		UsageException
-	 * @expectedExceptionMessage 	Unrecognized value for parameter 'type': notexisting
 	 */
 	public function testInvalidIncrementApiRequest() {
 
@@ -50,5 +49,7 @@ class IDProviderRandomApiTest extends ApiTestCase {
 			'type' => 'notexisting',
 			'format' => 'json',
 		));
+
+		$this->expectException( UsageException );
 	}
 }
