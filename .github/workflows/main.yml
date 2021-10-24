@@ -33,9 +33,9 @@ jobs:
           php -r "unlink('composer-setup.php');"
           mv composer.phar /usr/local/bin/composer
 
-      - name: Composer version
+      - name: MediaWiki Composer Update
         run: |
-          composer --version
+          composer update --working-dir ${{ env.MW_INST_PATH }}
 
       - name: Checkout Extension
         uses: actions/checkout@v2
@@ -48,3 +48,17 @@ jobs:
         run: |
           mkdir -p ${{ env.MW_EXT_PATH }}
           mv ${{ env.EXT_NAME }} ${{ env.MW_EXT_PATH }}
+
+      - name: Enable Debug Output
+        run: |
+          echo 'error_reporting(E_ALL| E_STRICT);' >> ${{ env.MW_INST_PATH }}/LocalSettings.php
+          echo 'ini_set("display_errors", 1);' >> ${{ env.MW_INST_PATH }}/LocalSettings.php
+          echo '$wgShowExceptionDetails = true;' >> ${{ env.MW_INST_PATH }}/LocalSettings.php
+          echo '$wgDevelopmentWarnings = true;' >> ${{ env.MW_INST_PATH }}/LocalSettings.php
+
+      - name: Register Extension
+        run: |
+          echo "wfLoadExtension( '${{ env.EXT_NAME }}' )" >> ${{ env.MW_INST_PATH }}/LocalSettings.php
+          tail -n5 ${{ env.MW_INST_PATH }}/LocalSettings.php
+          php ${{ env.MW_INST_PATH }}/maintenance/update.php --quick
+
