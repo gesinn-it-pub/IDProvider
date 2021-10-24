@@ -39,6 +39,17 @@ jobs:
         run: |
           composer update --working-dir ${{ env.MW_INST_PATH }}
 
+      -name: MediaWiki Install
+        run: >
+          php ${{ env.MW_INST_PATH }}/maintenance/install.php
+          --dbtype=sqlite
+          --dbname=wiki
+          --pass=pWd123456
+          --scriptpath=""
+          --dbpath=${{ env.MW_DB_PATH }}
+          --server="http://localhost:8000"
+          ${{ env.extension }}-test WikiSysop
+
       - name: Checkout Extension
         uses: actions/checkout@v2
         with:
