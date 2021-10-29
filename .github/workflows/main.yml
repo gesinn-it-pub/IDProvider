@@ -46,6 +46,7 @@ jobs:
         run: |
           pecl install xdebug
           echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/99-xdebug.ini
+          echo 'xdebug.mode=coverage' >> /usr/local/etc/php/conf.d/99-xdebug.ini
           php -v
 
       - name: MediaWiki Composer Update
