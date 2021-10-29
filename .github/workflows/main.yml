@@ -13,8 +13,10 @@ jobs:
 
     strategy:
       matrix:
-#        mediawiki_version: [1.31, 1.35]
-        mediawiki_version: [1.31]
+        include:
+          - mediawiki_version: 1.31
+            coverage: true
+
     container: mediawiki:${{ matrix.mediawiki_version }}
 
     env:
@@ -23,11 +25,14 @@ jobs:
       MW_INST_PATH: /var/www/html
       MW_DB_PATH: /var/www/data
       MW_EXT_PATH: /var/www/html/extensions
+      XDEBUG_ENABLE: true
+      XHPROF_ENABLE: true
 
     steps:
       # https://getcomposer.org/download/
       - name: Get Composer
         run: |
+          php --version
           apt update
           apt install -y unzip
           php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -81,3 +86,16 @@ jobs:
           php ${{ env.MW_INST_PATH }}/tests/phpunit/phpunit.php
           --group ${{ env.EXT_NAME }}
           --testdox
+        if: matrix.coverage == false
+
+      - name: Run Tests With Coverage
+        run: >
+          php ${{ env.MW_INST_PATH }}/tests/phpunit/phpunit.php
+          --group ${{ env.EXT_NAME }}
+          --testdox
+          --coverage-clover coverage.xml
+        if: matrix.coverage == true
+
+      - name: Upload code coverage
+        run: bash <(curl -s https://codecov.io/bash)
+        if: matrix.coverage == true
