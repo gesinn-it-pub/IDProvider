@@ -17,7 +17,9 @@ jobs:
           - mediawiki_version: 1.31
             coverage: true
 
-    container: mediawiki:${{ matrix.mediawiki_version }}
+    container:
+      image: mediawiki:${{ matrix.mediawiki_version }}
+      options: --env XDEBUG_ENABLE=true --env XHPROF_ENABLE=true
 
     env:
       EXT_NAME: IDProvider
