@@ -93,14 +93,14 @@ jobs:
       - name: Run Tests
         run: >
           php ${{ env.MW_INST_PATH }}/tests/phpunit/phpunit.php
-          --group ${{ env.EXT_NAME }}
+          --configuration extensions/${{ env.EXT_NAME }}
           --testdox
         if: matrix.coverage == false
 
       - name: Run Tests With Coverage
         run: >
           php ${{ env.MW_INST_PATH }}/tests/phpunit/phpunit.php
-          --group ${{ env.EXT_NAME }}
+          --configuration extensions/${{ env.EXT_NAME }}
           --testdox
           --coverage-clover ${{ env.MW_INST_PATH }}/docs/coverage.xml
         if: matrix.coverage == true
