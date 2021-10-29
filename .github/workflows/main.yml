@@ -34,7 +34,6 @@ jobs:
       # https://getcomposer.org/download/
       - name: Get Composer
         run: |
-          php --version
           apt update
           apt install -y unzip
           php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -42,6 +41,12 @@ jobs:
           php composer-setup.php --${{ env.COMPOSER_VERSION }}
           php -r "unlink('composer-setup.php');"
           mv composer.phar /usr/local/bin/composer
+
+      - name: Install Xdebug (for coverage)
+        run: |
+          pecl install xdebug
+          echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/99-xdebug.ini
+          php -v
 
       - name: MediaWiki Composer Update
         run: |
