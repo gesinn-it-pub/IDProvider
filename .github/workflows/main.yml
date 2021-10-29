@@ -48,6 +48,7 @@ jobs:
           echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/99-xdebug.ini
           echo 'xdebug.mode=coverage' >> /usr/local/etc/php/conf.d/99-xdebug.ini
           php -v
+        if: matrix.coverage == true
 
       - name: MediaWiki Composer Update
         run: |
