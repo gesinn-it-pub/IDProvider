@@ -102,9 +102,12 @@ jobs:
           php ${{ env.MW_INST_PATH }}/tests/phpunit/phpunit.php
           --group ${{ env.EXT_NAME }}
           --testdox
-          --coverage-clover coverage.xml
+          --coverage-clover ${{ env.MW_INST_PATH }}/docs/coverage.xml
         if: matrix.coverage == true
 
       - name: Upload code coverage
-        run: bash <(curl -s https://codecov.io/bash)
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ${{ env.MW_INST_PATH }}/docs/coverage.xml
         if: matrix.coverage == true
