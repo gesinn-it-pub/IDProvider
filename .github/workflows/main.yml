@@ -47,11 +47,14 @@ jobs:
         if: matrix.coverage == true
 
       - name: MediaWiki Install
-        run: >
-          apt update
-          apt install -y unzip
+        run: >-
+          apt update &&
+
+          apt install -y unzip &&
+
           composer update
-          --working-dir ${{ env.MW_INST_PATH }}
+          --working-dir ${{ env.MW_INST_PATH }} &&
+
           php ${{ env.MW_INST_PATH }}/maintenance/install.php
           --dbtype=sqlite
           --dbname=wiki
