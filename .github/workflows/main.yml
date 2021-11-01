@@ -46,12 +46,12 @@ jobs:
           php -v
         if: matrix.coverage == true
 
-      - name: MediaWiki Composer Update
-        run: |
-          composer update --working-dir ${{ env.MW_INST_PATH }}
-
       - name: MediaWiki Install
         run: >
+          apt update
+          apt install -y unzip
+          composer update
+          --working-dir ${{ env.MW_INST_PATH }}
           php ${{ env.MW_INST_PATH }}/maintenance/install.php
           --dbtype=sqlite
           --dbname=wiki
