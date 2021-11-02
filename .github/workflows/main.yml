@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Get Composer
-        uses: nanasess/composer-installer-action@v2.0.2
+        uses: nanasess/composer-installer-action@v2.0.3
 
       - name: Downgrade to Composer 1.x
         run: composer self-update --1
