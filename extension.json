@@ -1,52 +1,43 @@
 {
-    "name": "IDProvider",
-    "version": "1.1.2",
-    "author": [
-        "Simon Heimler",
-        "Alexander Gesinn (gesinn.it GmbH & Co. KG)"
-    ],
-    "url": "https://github.com/gesinn-it/IDProvider",
-    "descriptionmsg": "idprovider-desc",
-    "license-name": "MIT",
-    "type": "other",
-    
-    "APIModules": {
-        "idprovider-increment": "IDProviderIncrementApi",
-        "idprovider-random": "IDProviderRandomApi"
-    },
-    
-    "AutoloadClasses": {
-        "IDProviderHooks": "IDProvider.hooks.php",
-        "IDProviderFunctions": "IDProvider.functions.php",
-        "IDProviderIncrementApi": "api/IDProviderIncrementApi.php",
-        "IDProviderRandomApi": "api/IDProviderRandomApi.php"
-    },
-    "ExtensionMessagesFiles": {
-        "IDProviderMagic": "IDProvider.i18n.magic.php"
-    },
-    "MessagesDirs": {
-        "IDProvider": [
-            "i18n"
-        ]
-    },
-
-    "Hooks": {
-        "UnitTestsList": [
-            "IDProviderHooks::onUnitTestsList"
-        ],
-        "LoadExtensionSchemaUpdates": [
-            "IDProviderHooks::onLoadExtensionSchemaUpdates"
-        ],
-        "ParserFirstCallInit": [
-          "IDProviderHooks::onParserFirstCallInit"
-        ]
+	"name": "IDProvider",
+	"version": "1.1.3",
+	"author": [
+		"Simon Heimler",
+		"Alexander Gesinn (gesinn.it GmbH & Co. KG)",
+		"gesinn-it-wam (gesinn.it GmbH & Co. KG)"
+	],
+	"url": "https://github.com/gesinn-it/IDProvider",
+	"descriptionmsg": "idprovider-desc",
+	"license-name": "MIT",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.31"
 	},
-
-    "config": {
-        "IDProviderMinRandNumber ": 1000000000,
-        "IDProviderMaxRandNumber ": 9999999999,
-        "IDProviderRandStringLength ": 12
-    },
-    
-    "manifest_version": 1
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\IdProvider\\": "src/"
+	},
+	"Hooks": {
+		"UnitTestsList": [
+			"MediaWiki\\Extension\\IdProvider\\Hooks::onUnitTestsList"
+		],
+		"LoadExtensionSchemaUpdates": [
+			"MediaWiki\\Extension\\IdProvider\\Hooks::onLoadExtensionSchemaUpdates"
+		],
+		"ParserFirstCallInit": [
+			"MediaWiki\\Extension\\IdProvider\\Hooks::onParserFirstCallInit"
+		]
+	},
+	"APIModules": {
+		"idprovider-increment": "MediaWiki\\Extension\\IdProvider\\Api\\Increment",
+		"idprovider-random": "MediaWiki\\Extension\\IdProvider\\Api\\Random"
+	},
+	"ExtensionMessagesFiles": {
+		"IDProviderMagic": "IDProvider.i18n.magic.php"
+	},
+	"MessagesDirs": {
+		"IDProvider": [
+			"i18n"
+		]
+	},
+	"manifest_version": 1
 }
