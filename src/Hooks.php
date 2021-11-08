@@ -85,7 +85,7 @@ class Hooks {
 			$params['prefix'] = $frame;
 		}
 
-		$id = IdGenerator::getIncrement( $params );
+		$id = IdProviderFactory::increment( $params )->getId( $params );
 
 		// Remove "mw-parser-output" wrapper for mw >= 1.30
 		$opt = $parser->getOptions();
@@ -113,7 +113,7 @@ class Hooks {
 			$params['type'] = $frame;
 		}
 
-		$id = IdGenerator::getRandom( $params );
+		$id = IdProviderFactory::random( $params )->getId( $params );
 
 		// Remove "mw-parser-output" wrapper for mw >= 1.30
 		$opt = $parser->getOptions();

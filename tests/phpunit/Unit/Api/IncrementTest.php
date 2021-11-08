@@ -13,18 +13,18 @@
 namespace Tests\Unit;
 
 use ApiMain;
-use MediaWiki\Extension\IdProvider\Api\Random;
+use MediaWiki\Extension\IdProvider\Api\Increment;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group IDProvider
- * @covers \MediaWiki\Extension\IdProvider\Api\Random
+ * @covers \MediaWiki\Extension\IdProvider\Api\Increment
  */
-class ApiRandomTest extends TestCase {
+class IncrementTest extends TestCase {
 
 	public function testGetExamples() {
-		$random = new Random( new ApiMain(), null );
-		$messages = $random->getExamplesMessages();
+		$increment = new Increment( new ApiMain(), null );
+		$messages = $increment->getExamplesMessages();
 		$this->assertCount( 2, $messages );
 	}
 }

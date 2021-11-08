@@ -13,8 +13,7 @@
 namespace MediaWiki\Extension\IdProvider\Api;
 
 use ApiBase;
-use Exception;
-use MediaWiki\Extension\IdProvider\IdGenerator;
+use MediaWiki\Extension\IdProvider\IdProviderFactory;
 
 class Random extends ApiBase {
 
@@ -51,18 +50,9 @@ class Random extends ApiBase {
 	}
 
 	public function execute() {
-		try {
-			$params = $this->extractRequestParams();
-			$id = IdGenerator::getRandom( $params );
-			$this->getResult()->addValue( null, 'id', $id );
-		}
-		catch ( Exception $e ) {
-			$error = [
-				'code' => 'api_exception',
-				'info' => $e->getMessage(),
-			];
-			$this->getResult()->addValue( null, 'error', $error );
-		}
+		$params = $this->extractRequestParams();
+		$id = IdProviderFactory::random( $params )->getId( $params );
+		$this->getResult()->addValue( null, 'id', $id );
 	}
 
 	/**

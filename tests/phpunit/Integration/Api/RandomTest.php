@@ -23,7 +23,7 @@ use MWException;
  *
  * @covers \MediaWiki\Extension\IdProvider\Api\Random
  */
-class ApiRandomTest extends ApiTestCase {
+class RandomTest extends ApiTestCase {
 
 	public function testRequest() {
 		$data = $this->doApiRequest( [
@@ -37,7 +37,7 @@ class ApiRandomTest extends ApiTestCase {
 
 		$id = $data[0]['id'];
 
-		$this->assertContains( '___TEST___', $id, 'Returned UUID includes the prefix' );
+		$this->assertStringStartsWith( '___TEST___', $id, 'Returned UUID includes the prefix' );
 		$this->assertEquals( 46, strlen( $id ),
 			'Generates UUIDs with namespace and padding of the right lengths' );
 	}
