@@ -6,3 +6,4 @@ node_modules/
 ## File based ignores
 composer.phar
 composer.lock
+*.cache

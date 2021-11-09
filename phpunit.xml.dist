@@ -9,11 +9,7 @@
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">api</directory>
-            <file>IDProvider.functions.php</file>
-            <file>IDProvider.hooks.php</file>
-            <file>IDProvider.i18n.magic.php</file>
-            <file>IDProvider.php</file>
+            <directory>src</directory>
         </whitelist>
     </filter>
 </phpunit>

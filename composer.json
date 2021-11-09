@@ -1,8 +1,8 @@
 {
-	"name"       : "gesinn-it/id-provider",
-	"type"       : "mediawiki-extension",
+	"name": "gesinn-it/id-provider",
+	"type": "mediawiki-extension",
 	"description": "IDProvider is an extension to MediaWiki that provides (unique) IDs using different ID algorithms.",
-	"keywords"   : [
+	"keywords": [
 		"wiki",
 		"MediaWiki",
 		"extension",
@@ -10,26 +10,35 @@
 		"ID",
 		"UUID"
 	],
-	"homepage"   : "https://github.com/gesinn-it/IDProvider",
-	"license"    : "MIT",
-	"authors"    : [
+	"homepage": "https://github.com/gesinn-it/IDProvider",
+	"license": "MIT",
+	"authors": [
 		{
-			"name" : "Simon Heimler",
+			"name": "Simon Heimler",
 			"email": "heimlersimon@gmail.com",
-			"role" : "Developer"
+			"role": "Developer"
 		}
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"php"                : ">=5.3.0",
+		"php": ">=5.3.0",
 		"composer/installers": "1.*,>=1.0.1"
 	},
-	"autoload"   : {
-		"files": [
-			"IDProvider.php"
-		]
+	"require-dev": {
+		"mediawiki/mediawiki-codesniffer": "37.0.0",
+		"mediawiki/minus-x": "1.1.1",
+		"php-parallel-lint/php-console-highlighter": "0.5.0",
+		"php-parallel-lint/php-parallel-lint": "1.3.1"
 	},
-	"extra": {
-		"installer-name": "IDProvider"
+	"scripts": {
+		"test": [
+			"parallel-lint . --exclude vendor --exclude node_modules",
+			"@phpcs"
+		],
+		"fix": [
+			"minus-x fix .",
+			"phpcbf"
+		],
+		"phpcs": "phpcs -sp --cache"
 	}
 }
