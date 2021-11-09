@@ -67,14 +67,14 @@ class IncrementIdGenerator {
 			], __METHOD__ );
 
 			if ( $prefixIncrement->numRows() <= 0 ) {
-				$dbw->insert( 'idprovider_increments', [ 'prefix' => $prefix, 'increment' => 0 ] );
+				$dbw->insert( 'idprovider_increments', [ 'prefix' => $prefix, 'increment' => 1 ] );
+				$increment = 1;
+			} else {
+				$incrementRow = $prefixIncrement->fetchRow();
+				$increment = $incrementRow['increment'] + 1;
+				$dbw->update( 'idprovider_increments', [ 'increment = ' . $increment ],
+					[ 'prefix' => $prefix ] );
 			}
-
-			$incrementRow = $prefixIncrement->fetchRow();
-			$increment = $incrementRow['increment'] + 1;
-
-			$dbw->update( 'idprovider_increments', [ 'increment = increment + 1' ],
-				[ 'prefix' => $prefix ] );
 
 			return $increment;
 		} );
