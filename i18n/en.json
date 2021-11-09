@@ -5,12 +5,9 @@
 		]
 	},
 	"idprovider-desc": "A MediaWiki service extension that provides (unique) IDs in several ways",
-
-    "idp-apiparam-skipuniquetest": "Checks that the ID does not correspond to an already existing wikipage",
-    "idp-apiparam-prefix": "Prefix/namespace. In case of increments, each prefix gets it's own increment state.",
-
-    "idp-random-apiparam-type": "Choose a random ID generation algorithm",
-
-    "idp-increment-apiparam-start": "Start/increase increment with/to this minimum value",
-    "idp-increment-apiparam-padding": "Minimum length of the generated increment number. Fills it with leading zeros. E.g. padding=5 results in 00001"
+	"idp-apiparam-skipuniquetest": "Checks that the ID does not correspond to an already existing wikipage",
+	"idp-apiparam-prefix": "Prefix/namespace. In case of increments, each prefix gets it's own increment state.",
+	"idp-random-apiparam-type": "Choose a random ID generation algorithm",
+	"idp-increment-apiparam-start": "Start/increase increment with/to this minimum value",
+	"idp-increment-apiparam-padding": "Minimum length of the generated increment number. Fills it with leading zeros. E.g. padding=5 results in 00001"
 }
