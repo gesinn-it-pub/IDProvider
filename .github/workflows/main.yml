@@ -20,8 +20,7 @@ jobs:
             coverage: false
 
     container:
-      image: mediawiki:${{ matrix.mediawiki_version }}
-      options: --env XDEBUG_ENABLE=true --env XHPROF_ENABLE=true
+      image: gesinn/docker-mediawiki:${{ matrix.mediawiki_version }}
 
     env:
       EXT_NAME: IDProvider
@@ -33,39 +32,6 @@ jobs:
       XHPROF_ENABLE: true
 
     steps:
-      - name: Get Composer
-        uses: nanasess/composer-installer-action@v2.0.3
-
-      - name: Downgrade to Composer 1.x
-        run: composer self-update --1
-        if: matrix.mediawiki_version == 1.31
-
-      - name: Install Xdebug (for coverage)
-        run: |
-          pecl install xdebug
-          echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/99-xdebug.ini
-          echo 'xdebug.mode=coverage' >> /usr/local/etc/php/conf.d/99-xdebug.ini
-          php -v
-        if: matrix.coverage == true
-
-      - name: MediaWiki Install
-        run: >-
-          apt update &&
-
-          apt install -y unzip &&
-
-          composer update
-          --working-dir ${{ env.MW_INST_PATH }} &&
-
-          php ${{ env.MW_INST_PATH }}/maintenance/install.php
-          --dbtype=sqlite
-          --dbname=wiki
-          --pass=Password123456
-          --scriptpath=""
-          --dbpath=${{ env.MW_DB_PATH }}
-          --server="http://localhost:8000"
-          ${{ env.EXT_NAME }}-test WikiSysop
-
       - name: Checkout Extension
         uses: actions/checkout@v2
         with:
