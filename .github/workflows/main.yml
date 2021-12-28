@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+ #   branches: [ master ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -14,13 +14,27 @@ jobs:
     strategy:
       matrix:
         include:
-          - mediawiki_version: 1.31
-            coverage: true
+ #         - mediawiki_version: 1.31
+ #           database_type: sqlite
+ #           coverage: false
           - mediawiki_version: 1.35
+            database_type: mysql
             coverage: false
+ #         - mediawiki_version: 1.35
+ #           database_type: sqlite
+ #           coverage: true
+
+    services:
+      mysql:
+        image: mariadb:latest
+        env:
+          MYSQL_ROOT_PASSWORD: database
+        ports:
+          - 3306
+        options: --name mysql --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=10
 
     container:
-      image: gesinn/docker-mediawiki-sqlite:${{ matrix.mediawiki_version }}
+      image: gesinn/docker-mediawiki-${{ matrix.database_type }}:${{ matrix.mediawiki_version }}
 
     env:
       EXT_NAME: IDProvider
@@ -29,6 +43,13 @@ jobs:
       MW_EXT_PATH: /var/www/html/extensions
 
     steps:
+      - name: Get MySQL from dump
+        run: |
+          wget https://github.com/gesinn-it/docker-mediawiki/releases/download/${{ matrix.mediawiki_version }}/mediawiki-mysql-${{ matrix.mediawiki_version }}.sql.bz2
+          bunzip2 mediawiki-mysql-${{ matrix.mediawiki_version }}.sql.bz2
+          export MYSQL_PWD=database
+          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -e "create database wiki"
+
       - name: Checkout Extension
         uses: actions/checkout@v2
         with:
