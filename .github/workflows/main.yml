@@ -61,8 +61,8 @@ jobs:
           mysql --host mysql -uroot -e "grant select, insert, update, delete, alter, drop, create, create temporary tables, index on wiki.* to 'wiki'@'%' WITH GRANT OPTION"
           mysql --host mysql -uroot -e "grant select, insert, update, delete, alter, drop, create, create temporary tables, index on wiki.* to 'wiki'@'localhost' WITH GRANT OPTION"
           mysql --host mysql -uroot --default-character-set=utf8 "wiki" < mediawiki-mysql-${{ matrix.mediawiki_version }}.sql
-          echo '$wgDBServer="mysql";' >> ${{ env.MW_INST_PATH }}/LocalSettings.php
-          cat cat ${{ env.MW_INST_PATH }}/LocalSettings.php
+          sed -i '/$wgDBserver/c\$wgDBserver = "mysql";' ${{ env.MW_INST_PATH }}/LocalSettings.php
+          cat ${{ env.MW_INST_PATH }}/LocalSettings.php
 
       - name: Checkout Extension
         uses: actions/checkout@v2
