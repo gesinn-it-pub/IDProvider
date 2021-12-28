@@ -46,7 +46,7 @@ jobs:
       - name: Install packages
         run: |
           apt update
-          apt install -y wget unzip
+          apt install -y wget default-mysql-client
 
       - name: Get MySQL from dump
         run: |
