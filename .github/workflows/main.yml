@@ -20,7 +20,7 @@ jobs:
             coverage: false
 
     container:
-      image: gesinn/docker-mediawiki:${{ matrix.mediawiki_version }}
+      image: gesinn/docker-mediawiki-sqlite:${{ matrix.mediawiki_version }}
 
     env:
       EXT_NAME: IDProvider
