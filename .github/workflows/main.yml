@@ -43,6 +43,11 @@ jobs:
       MW_EXT_PATH: /var/www/html/extensions
 
     steps:
+      - name: Install packages
+        run: |
+          apt update
+          apt install -y wget unzip
+
       - name: Get MySQL from dump
         run: |
           wget https://github.com/gesinn-it/docker-mediawiki/releases/download/${{ matrix.mediawiki_version }}/mediawiki-mysql-${{ matrix.mediawiki_version }}.sql.bz2
