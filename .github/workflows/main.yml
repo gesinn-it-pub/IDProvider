@@ -53,6 +53,13 @@ jobs:
           bunzip2 mediawiki-mysql-${{ matrix.mediawiki_version }}.sql.bz2
           export MYSQL_PWD=database
           mysql --host mysql -uroot -e "create database wiki"
+          mysql --host mysql -uroot -e "CREATE USER IF NOT EXISTS 'wiki'@'%';"
+          mysql --host mysql -uroot -e "ALTER USER 'wiki'@'%' IDENTIFIED BY 'wiki';"
+          mysql --host mysql -uroot -e "CREATE USER IF NOT EXISTS 'wiki'@'localhost';"
+          mysql --host mysql -uroot -e "ALTER USER 'wiki'@'localhost' IDENTIFIED BY 'wiki';"
+          mysql --host mysql -uroot -e "grant select, insert, update, delete, alter, drop, create, create temporary tables, index on `wiki\`.* to 'wiki'@'%' WITH GRANT OPTION"
+          mysql --host mysql -uroot -e "grant select, insert, update, delete, alter, drop, create, create temporary tables, index on `wiki\`.* to 'wiki'@'localhost' WITH GRANT OPTION"
+          mysql --host mysql -uroot --default-character-set=utf8 "wiki" < mediawiki-mysql-${{ matrix.mediawiki_version }}.sql
 
       - name: Checkout Extension
         uses: actions/checkout@v2
