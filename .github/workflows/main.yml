@@ -25,16 +25,15 @@ jobs:
  #           coverage: true
 
     services:
-      mysql:
+      some-mysql:
         image: mariadb:latest
         env:
           MYSQL_ROOT_PASSWORD: database
-        ports:
-          - 3306
         options: --name mysql --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=10
 
     container:
       image: gesinn/docker-mediawiki-${{ matrix.database_type }}:${{ matrix.mediawiki_version }}
+      options: --link some-mysql:mysql
 
     env:
       EXT_NAME: IDProvider
@@ -53,7 +52,7 @@ jobs:
           wget https://github.com/gesinn-it/docker-mediawiki/releases/download/${{ matrix.mediawiki_version }}/mediawiki-mysql-${{ matrix.mediawiki_version }}.sql.bz2
           bunzip2 mediawiki-mysql-${{ matrix.mediawiki_version }}.sql.bz2
           export MYSQL_PWD=database
-          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -e "create database wiki"
+          mysql --host mysql -uroot -e "create database wiki"
 
       - name: Checkout Extension
         uses: actions/checkout@v2
