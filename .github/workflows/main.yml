@@ -43,6 +43,7 @@ jobs:
 
     steps:
       - name: Get MySQL from dump
+        working-directory: ${{ env.MW_INST_PATH }}
         run: |
           ls -la
 #          bash restore-database.sh
