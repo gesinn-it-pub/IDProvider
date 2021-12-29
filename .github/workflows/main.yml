@@ -42,11 +42,6 @@ jobs:
       MW_EXT_PATH: /var/www/html/extensions
 
     steps:
-      - name: Install packages
-        run: |
-          apt update
-          apt install -y wget default-mysql-client
-
       - name: Get MySQL from dump
         run: |
           cd /tmp
