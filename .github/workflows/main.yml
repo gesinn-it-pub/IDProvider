@@ -46,7 +46,7 @@ jobs:
         working-directory: ${{ env.MW_INST_PATH }}
         run: |
           ls -la
-#          bash restore-database.sh
+          bash restore-database.sh
 
       - name: Checkout Extension
         uses: actions/checkout@v2
