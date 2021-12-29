@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
- #   branches: [ master ]
+   branches: [ master ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -14,15 +14,15 @@ jobs:
     strategy:
       matrix:
         include:
- #         - mediawiki_version: 1.31
- #           database_type: sqlite
- #           coverage: false
+          - mediawiki_version: 1.31
+            database_type: sqlite
+            coverage: false
           - mediawiki_version: 1.35
             database_type: mysql
+            coverage: true
+          - mediawiki_version: 1.35
+            database_type: sqlite
             coverage: false
- #         - mediawiki_version: 1.35
- #           database_type: sqlite
- #           coverage: true
 
     services:
       some-mysql:
@@ -44,9 +44,7 @@ jobs:
     steps:
       - name: Get MySQL from dump
         working-directory: ${{ env.MW_INST_PATH }}
-        run: |
-          ls -la
-          bash restore-database.sh
+        run: bash restore-database.sh
 
       - name: Checkout Extension
         uses: actions/checkout@v2
