@@ -45,6 +45,7 @@ jobs:
       - name: Get MySQL from dump
         working-directory: ${{ env.MW_INST_PATH }}
         run: bash restore-database.sh
+        if: matrix.database_type == 'mysql'
 
       - name: Checkout Extension
         uses: actions/checkout@v2
