@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+   branches: [ master ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -15,12 +15,25 @@ jobs:
       matrix:
         include:
           - mediawiki_version: 1.31
+            database_type: sqlite
+            coverage: false
+          - mediawiki_version: 1.35
+            database_type: mysql
             coverage: true
           - mediawiki_version: 1.35
+            database_type: sqlite
             coverage: false
 
+    services:
+      some-mysql:
+        image: mariadb:latest
+        env:
+          MYSQL_ROOT_PASSWORD: database
+        options: --name mysql --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=10
+
     container:
-      image: gesinn/docker-mediawiki-sqlite:${{ matrix.mediawiki_version }}
+      image: gesinn/docker-mediawiki-${{ matrix.database_type }}:${{ matrix.mediawiki_version }}
+      options: --link some-mysql:mysql
 
     env:
       EXT_NAME: IDProvider
@@ -29,6 +42,11 @@ jobs:
       MW_EXT_PATH: /var/www/html/extensions
 
     steps:
+      - name: Get MySQL from dump
+        working-directory: ${{ env.MW_INST_PATH }}
+        run: bash restore-database.sh
+        if: matrix.database_type == 'mysql'
+
       - name: Checkout Extension
         uses: actions/checkout@v2
         with:
