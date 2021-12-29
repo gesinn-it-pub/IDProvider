@@ -43,7 +43,9 @@ jobs:
 
     steps:
       - name: Get MySQL from dump
-        run: restore-database.sh
+        run: |
+          ls -la
+#          bash restore-database.sh
 
       - name: Checkout Extension
         uses: actions/checkout@v2
