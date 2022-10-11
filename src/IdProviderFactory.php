@@ -46,7 +46,7 @@ class IdProviderFactory {
 		return function ( $action ) {
 			$factory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 			$mainLB = $factory->getMainLB();
-			$dbw = $mainLB->getConnectionRef( DB_MASTER );
+			$dbw = $mainLB->getConnectionRef( DB_PRIMARY );
 			$factory->beginPrimaryChanges( __METHOD__ );
 			$result = $action( $dbw );
 			$factory->commitPrimaryChanges( __METHOD__ );
