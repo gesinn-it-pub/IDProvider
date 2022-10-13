@@ -44,6 +44,7 @@ class IdProviderFactory {
 
 	private static function dbExecute() {
 		return function ( $action ) {
+			global $wgVersion;
 			$factory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 			$mainLB = $factory->getMainLB();
 			if ( version_compare( $wgVersion, '1.37', '<' ) ) {
