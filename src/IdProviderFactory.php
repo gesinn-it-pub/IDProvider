@@ -44,14 +44,23 @@ class IdProviderFactory {
 
 	private static function dbExecute() {
 		return function ( $action ) {
+			global $wgVersion;
 			$factory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 			$mainLB = $factory->getMainLB();
-			$dbw = $mainLB->getConnectionRef( DB_MASTER );
-			$factory->beginMasterChanges( __METHOD__ );
-			$result = $action( $dbw );
-			$factory->commitMasterChanges( __METHOD__ );
-
-			return $result;
+			if ( version_compare( $wgVersion, '1.37', '<' ) ) {
+				$dbw = $mainLB->getConnectionRef( DB_MASTER );
+				$factory->beginMasterChanges( __METHOD__ );
+				$result = $action( $dbw );
+				$factory->commitMasterChanges( __METHOD__ );
+				return $result;
+			} else {
+				// in MediaWiki 1.37 and later, some functions were renamed and others deprecated
+				$dbw = $mainLB->getConnection( DB_PRIMARY );
+				$factory->beginPrimaryChanges( __METHOD__ );
+				$result = $action( $dbw );
+				$factory->commitPrimaryChanges( __METHOD__ );
+				return $result;
+			}
 		};
 	}
 
