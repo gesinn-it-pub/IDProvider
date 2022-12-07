@@ -8,7 +8,7 @@
  * @file
  * @ingroup Extensions
  */
- 
+
  class IDProviderFunctions {
 
 
@@ -95,11 +95,10 @@
         // Get DB with read access
         // > MW 1.27
         if ( class_exists( '\MediaWiki\MediaWikiServices' ) && method_exists( '\MediaWiki\MediaWikiServices', 'getDBLoadBalancerFactory' ) ) {
-            $factory = \MediaWiki\MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-            $mainLB = $factory->getMainLB();
-            $dbw = $mainLB->getConnectionRef( DB_MASTER );
-            $factory->beginMasterChanges(__METHOD__);
-        } else {        
+			$lb = \MediaWiki\MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->newMainLB();
+			$dbw = $lb->getConnection( DB_MASTER );
+			$dbw->clearFlag( DBO_TRX );
+        } else {
             $dbw = wfGetDB(DB_MASTER);
             $dbw->begin();
         }
@@ -125,7 +124,7 @@
 			);
             // > MW 1.27
             if ( class_exists( '\MediaWiki\MediaWikiServices' ) && method_exists( '\MediaWiki\MediaWikiServices', 'getDBLoadBalancerFactory' ) ) {
-                $factory->commitMasterChanges(__METHOD__); 
+				$lb->disable();
             } else {
             	$dbw->commit();
             }
@@ -149,12 +148,12 @@
 			);
             // > MW 1.27
             if ( class_exists( '\MediaWiki\MediaWikiServices' ) && method_exists( '\MediaWiki\MediaWikiServices', 'getDBLoadBalancerFactory' ) ) {
-                $factory->commitMasterChanges(__METHOD__); 
+				$lb->disable();
             } else {
             	$dbw->commit();
             }
-		}     
-        
+		}
+
 		if (!$increment) {
 			throw new Exception('Could not calculate the increment!');
 		}
