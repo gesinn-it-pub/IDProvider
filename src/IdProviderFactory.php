@@ -44,23 +44,17 @@ class IdProviderFactory {
 
 	private static function dbExecute() {
 		return function ( $action ) {
-			global $wgVersion;
-			$factory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-			$mainLB = $factory->getMainLB();
-			if ( version_compare( $wgVersion, '1.37', '<' ) ) {
-				$dbw = $mainLB->getConnectionRef( DB_MASTER );
-				$factory->beginMasterChanges( __METHOD__ );
-				$result = $action( $dbw );
-				$factory->commitMasterChanges( __METHOD__ );
-				return $result;
-			} else {
-				// in MediaWiki 1.37 and later, some functions were renamed and others deprecated
-				$dbw = $mainLB->getConnection( DB_PRIMARY );
-				$factory->beginPrimaryChanges( __METHOD__ );
-				$result = $action( $dbw );
-				$factory->commitPrimaryChanges( __METHOD__ );
-				return $result;
-			}
+			// Use a separate DB connection here to be able to avoid concurrency issues and
+			// not disturb possible surrounding transactions. (This seems to be natural as
+			// the creation of IDs is completely independent of actual MediaWiki data.)
+			$lb = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->newMainLB();
+			$dbw = $lb->getConnection( DB_PRIMARY );
+			$dbw->clearFlag( DBO_TRX );
+
+			$result = $action( $dbw );
+
+			$lb->disable();
+			return $result;
 		};
 	}
 
