@@ -60,11 +60,11 @@ jobs:
         if: matrix.database_type == 'mysql'
 
       - name: Checkout Extension
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ env.EXT_NAME }}
 
-      # Setting actions/checkout@v2 path to env.MW_EXT_PATH fails with "Repository path '/var/www/html/extensions' is not under ..."
+      # Setting actions/checkout@v3 path to env.MW_EXT_PATH fails with "Repository path '/var/www/html/extensions' is not under ..."
       # See also open PR https://github.com/actions/checkout/pull/388
       - name: Move Extension
         run: |
@@ -93,7 +93,7 @@ jobs:
         if: matrix.coverage == true
 
       - name: Upload code coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ${{ env.MW_INST_PATH }}/docs/coverage.xml
