@@ -1,0 +1,16 @@
+services:
+  wiki:
+    build: .
+    image: ${IMAGE_NAME}
+
+  mysql:
+    image: mysql:5
+    environment:
+      - MYSQL_ROOT_PASSWORD=database
+    profiles:
+      - mysql
+
+  wait-for:
+    image: mintel/docker-wait-for-it
+    profiles:
+      - no-up
