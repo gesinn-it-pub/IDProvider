@@ -38,7 +38,7 @@ jobs:
 
     env:
       MW_VERSION: ${{ matrix.mediawiki_version }}
-      DB_TYPE: ${{ database_type }}
+      DB_TYPE: ${{ matrix.database_type }}
 
     steps:
       - name: Checkout
