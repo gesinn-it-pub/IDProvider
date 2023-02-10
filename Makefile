@@ -63,7 +63,7 @@ show-logs: .init
 		php maintenance/install.php \
 		    --pass=wiki4everyone --server=http://localhost:8080 --scriptpath='' \
     		--dbname=wiki --dbuser=wiki --dbpass=wiki $(WIKI_DB_CONFIG) wiki WikiSysop && \
-		echo 'require_once(\"\\$$IP/LocalSettings.Include.php\");' >> LocalSettings.php && \
+		cat __setup_extension__ >> LocalSettings.php && \
 		sudo -u www-data php maintenance/update.php --skip-external-dependencies --quick \
 		"
 

@@ -14,7 +14,7 @@ RUN cd extensions/$EXTENSION && \
 
 COPY . /var/www/html/extensions/$EXTENSION
 
+# Create file containing PHP code to setup extension; to be appended to LocalSettings.php
 RUN echo \
-        "<?php" \
         "wfLoadExtension( '$EXTENSION' );\n" \
-    >> LocalSettings.Include.php
+    >> __setup_extension__
