@@ -9,8 +9,8 @@ IMAGE_NAME := $(extension):test-$(IMAGE_VERSION)
 EXTENSION_FOLDER := /var/www/html/extensions/${EXTENSION}
 
 compose = IMAGE_NAME=$(IMAGE_NAME) docker-compose $(COMPOSE_ARGS)
-compose-run = $(compose) run --rm
-compose-exec-wiki = $(compose) exec wiki
+compose-run = $(compose) run -T --rm
+compose-exec-wiki = $(compose) exec -T wiki
 
 show-current-target = @echo; echo "======= $@ ========"
 
@@ -39,7 +39,7 @@ destroy: .init .destroy
 .PHONY: bash
 bash: .init
 	$(show-current-target)
-	$(compose-exec-wiki) bash -c "cd $(EXTENSION_FOLDER) && bash"
+	$(compose) exec wiki bash -c "cd $(EXTENSION_FOLDER) && bash"
 
 .PHONY: show-logs
 show-logs: .init
@@ -63,7 +63,8 @@ show-logs: .init
 		php maintenance/install.php \
 		    --pass=wiki4everyone --server=http://localhost:8080 --scriptpath='' \
     		--dbname=wiki --dbuser=wiki --dbpass=wiki $(WIKI_DB_CONFIG) wiki WikiSysop && \
-		echo 'require_once(\"\\$$IP/LocalSettings.Include.php\");' >> LocalSettings.php \
+		echo 'require_once(\"\\$$IP/LocalSettings.Include.php\");' >> LocalSettings.php && \
+		sudo -u www-data php maintenance/update.php --skip-external-dependencies --quick \
 		"
 
 .PHONY: .down
