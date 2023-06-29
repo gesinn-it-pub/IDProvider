@@ -1,14 +1,23 @@
+include .env
+export
+
 EXTENSION := IDProvider
 
 MW_VERSION ?= 1.35
 IMAGE_VERSION := $(MW_VERSION)
+PHP_VERSION ?= 7.4
+DB_TYPE ?= sqlite
+DB_IMAGE ?= ""
 
 # -------------------------------------------------------------------
+
 extension := $(shell echo $(EXTENSION) | tr A-Z a-z})
 IMAGE_NAME := $(extension):test-$(IMAGE_VERSION)
 EXTENSION_FOLDER := /var/www/html/extensions/${EXTENSION}
 
-compose = IMAGE_NAME=$(IMAGE_NAME) docker-compose $(COMPOSE_ARGS)
+environment = MW_VERSION=$(MW_VERSION) IMAGE_NAME=$(IMAGE_NAME) PHP_VERSION=$(PHP_VERSION) DB_TYPE=$(DB_TYPE) DB_IMAGE=$(DB_IMAGE)
+
+compose = $(environment) docker-compose $(COMPOSE_ARGS)
 compose-run = $(compose) run -T --rm
 compose-exec-wiki = $(compose) exec -T wiki
 
@@ -49,8 +58,7 @@ show-logs: .init
 .PHONY: .build
 .build:
 	$(show-current-target)
-	$(compose) build --build-arg MW_VERSION=$(MW_VERSION) wiki
-
+	$(compose) build wiki
 .PHONY: .up
 .up:
 	$(show-current-target)

@@ -1,10 +1,15 @@
 services:
   wiki:
-    build: .
+    build:
+      context: .
+      args:
+        MW_VERSION: ${MW_VERSION}
+        PHP_VERSION: ${PHP_VERSION}
+        DB_TYPE: ${DB_TYPE}
     image: ${IMAGE_NAME}
 
   mysql:
-    image: mysql:5
+    image: ${DB_IMAGE}
     environment:
       - MYSQL_ROOT_PASSWORD=database
     profiles:

@@ -14,31 +14,21 @@ jobs:
     strategy:
       matrix:
         include:
-          - mediawiki_version: 1.31
-            database_type: sqlite
-            coverage: false
           - mediawiki_version: 1.35
+            php_version: 7.4
             database_type: mysql
+            database_image: "mysql:5.7"
             coverage: true
-          - mediawiki_version: 1.35
-            database_type: sqlite
-            coverage: false
-          - mediawiki_version: 1.37
+          - mediawiki_version: 1.39
+            php_version: 8.1
             database_type: mysql
-            coverage: false
-          - mediawiki_version: 1.37
-            database_type: sqlite
-            coverage: false
-          - mediawiki_version: 1.38
-            database_type: mysql
-            coverage: false
-          - mediawiki_version: 1.38
-            database_type: sqlite
-            coverage: false
-
+            database_image: "mysql:8"
+            coverage: true
     env:
       MW_VERSION: ${{ matrix.mediawiki_version }}
+      PHP_VERSION: ${{ matrix.php_version }}
       DB_TYPE: ${{ matrix.database_type }}
+      DB_IMAGE: ${{ matrix.database_image }}
 
     steps:
       - name: Checkout
