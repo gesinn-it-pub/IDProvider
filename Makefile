@@ -15,7 +15,11 @@ extension := $(shell echo $(EXTENSION) | tr A-Z a-z})
 IMAGE_NAME := $(extension):test-$(IMAGE_VERSION)
 EXTENSION_FOLDER := /var/www/html/extensions/${EXTENSION}
 
-environment = MW_VERSION=$(MW_VERSION) IMAGE_NAME=$(IMAGE_NAME) PHP_VERSION=$(PHP_VERSION) DB_TYPE=$(DB_TYPE) DB_IMAGE=$(DB_IMAGE)
+environment = MW_VERSION=$(MW_VERSION) \
+IMAGE_NAME=$(IMAGE_NAME) \
+PHP_VERSION=$(PHP_VERSION) \
+DB_TYPE=$(DB_TYPE) \
+DB_IMAGE=$(DB_IMAGE)
 
 compose = $(environment) docker-compose $(COMPOSE_ARGS)
 compose-run = $(compose) run -T --rm
