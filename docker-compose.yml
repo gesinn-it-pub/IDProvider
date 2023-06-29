@@ -9,7 +9,7 @@ services:
     image: ${IMAGE_NAME}
 
   mysql:
-    image: ${DB_IMAGE}
+    image: ${DB_IMAGE:-mysql:5}
     environment:
       - MYSQL_ROOT_PASSWORD=database
     profiles:
