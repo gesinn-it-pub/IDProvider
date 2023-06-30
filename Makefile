@@ -19,9 +19,11 @@ environment = MW_VERSION=$(MW_VERSION) \
 IMAGE_NAME=$(IMAGE_NAME) \
 PHP_VERSION=$(PHP_VERSION) \
 DB_TYPE=$(DB_TYPE) \
-DB_IMAGE=$(DB_IMAGE)
+DB_IMAGE=$(DB_IMAGE) \
+EXTENSION_FOLDER=$(EXTENSION_FOLDER)
 
 compose = $(environment) docker-compose $(COMPOSE_ARGS)
+compose-build = $(environment) docker-compose -f docker-compose.yml -f docker-compose-build.yml $(COMPOSE_ARGS)
 compose-run = $(compose) run -T --rm
 compose-exec-wiki = $(compose) exec -T wiki
 
@@ -52,21 +54,21 @@ destroy: .init .destroy
 .PHONY: bash
 bash: .init
 	$(show-current-target)
-	$(compose) exec wiki bash -c "cd $(EXTENSION_FOLDER) && bash"
+	$(compose-build) exec wiki bash -c "cd $(EXTENSION_FOLDER) && bash"
 
 .PHONY: show-logs
 show-logs: .init
 	$(show-current-target)
-	$(compose) logs -f || true
+	$(compose-build) logs -f || true
 
 .PHONY: .build
 .build:
 	$(show-current-target)
-	$(compose) build wiki
+	$(compose-build) build wiki
 .PHONY: .up
 .up:
 	$(show-current-target)
-	$(compose) up -d
+	$(compose-build) up -d
 
 .PHONY: .install
 .install: .wait-for-db
@@ -82,12 +84,12 @@ show-logs: .init
 .PHONY: .down
 .down:
 	$(show-current-target)
-	$(compose) down
+	$(compose-build) down
 
 .PHONY: .destroy
 .destroy:
 	$(show-current-target)
-	$(compose) down -v
+	$(compose-build) down -v
 
 .PHONY: .wait-for-db
 .wait-for-db:
