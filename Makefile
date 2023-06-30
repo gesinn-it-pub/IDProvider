@@ -92,18 +92,19 @@ show-logs: .init
 .PHONY: .wait-for-db
 .wait-for-db:
 	$(show-current-target)
-ifneq ($(DB_TYPE), sqlite)
+ifeq ($(DB_TYPE), mysql)
 	$(compose-run) wait-for $(DB_TYPE):3306 -t 120
+else ifeq ($(DB_TYPE), postgres)
+	$(compose-run) wait-for $(DB_TYPE):5432 -t 120
 endif
 
 .PHONY: .init
 .init:
 	$(show-current-target)
-ifeq ($(DB_TYPE), mysql)
-	$(eval COMPOSE_ARGS = --project-name idprovider-mysql --profile mysql)
-	$(eval WIKI_DB_CONFIG = --dbtype=mysql --dbserver=mysql --installdbuser=root --installdbpass=database)
+	$(eval COMPOSE_ARGS = --project-name idprovider-$(DB_TYPE) --profile $(DB_TYPE))
+ifeq ($(DB_TYPE), sqlite)
+	$(eval WIKI_DB_CONFIG = --dbtype=$(DB_TYPE) --dbpath=/tmp/sqlite)
 else
-	$(eval COMPOSE_ARGS = --project-name idprovider-sqlite)
-	$(eval WIKI_DB_CONFIG = --dbtype=sqlite --dbpath=/data/sqlite)
+	$(eval WIKI_DB_CONFIG = --dbtype=$(DB_TYPE) --dbserver=$(DB_TYPE) --installdbuser=root --installdbpass=database)
 endif
 	@echo "COMPOSE_ARGS: $(COMPOSE_ARGS)"
