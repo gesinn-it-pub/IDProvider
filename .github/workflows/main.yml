@@ -36,7 +36,7 @@ jobs:
           - mediawiki_version: 1.39
             php_version: 8.1
             database_type: postgres
-            database_image: "postgres:latest"
+            database_image: "postgres:14"
             coverage: false
     env:
       MW_VERSION: ${{ matrix.mediawiki_version }}
