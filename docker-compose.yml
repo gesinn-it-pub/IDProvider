@@ -17,6 +17,7 @@ services:
   postgres:
     image: ${DB_IMAGE:-postgres:15}
     environment:
+      - POSTGRES_USER=root
       - POSTGRES_PASSWORD=database
     profiles:
       - postgres
