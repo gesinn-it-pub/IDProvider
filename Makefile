@@ -1,28 +1,48 @@
-EXTENSION := IDProvider
+-include .env
+export
 
+# ======== Naming ========
+EXTENSION := IDProvider
+EXTENSION_FOLDER := /var/www/html/extensions/${EXTENSION}
+extension := $(shell echo $(EXTENSION) | tr A-Z a-z})
+IMAGE_NAME := $(extension):test-$(MW_VERSION)
+
+# ======== CI ENV Variables ========
 MW_VERSION ?= 1.35
 IMAGE_VERSION := $(MW_VERSION)
+PHP_VERSION ?= 7.4
+DB_TYPE ?= sqlite
+DB_IMAGE ?= ""
 
-# -------------------------------------------------------------------
-extension := $(shell echo $(EXTENSION) | tr A-Z a-z})
-IMAGE_NAME := $(extension):test-$(IMAGE_VERSION)
-EXTENSION_FOLDER := /var/www/html/extensions/${EXTENSION}
 
-compose = IMAGE_NAME=$(IMAGE_NAME) docker-compose $(COMPOSE_ARGS)
+# ======== Docker-Compose Commands ========
+environment = MW_VERSION=$(MW_VERSION) \
+IMAGE_NAME=$(IMAGE_NAME) \
+PHP_VERSION=$(PHP_VERSION) \
+DB_TYPE=$(DB_TYPE) \
+DB_IMAGE=$(DB_IMAGE) \
+EXTENSION_FOLDER=$(EXTENSION_FOLDER)
+
+
+ifneq (,$(wildcard ./docker-compose.override.yml))
+     COMPOSE_OVERRIDE=-f docker-compose.override.yml
+endif
+
+compose = $(environment) docker-compose $(COMPOSE_OVERRIDE) $(COMPOSE_ARGS)
+compose-ci = $(environment) docker-compose -f docker-compose.yml -f docker-compose-ci.yml $(COMPOSE_OVERRIDE) $(COMPOSE_ARGS)
+
 compose-run = $(compose) run -T --rm
 compose-exec-wiki = $(compose) exec -T wiki
 
 show-current-target = @echo; echo "======= $@ ========"
 
+# ======== CI ========
+# ======== Global Targets ========
 .PHONY: ci
-ci: install
-	$(show-current-target)
-	$(compose-exec-wiki) bash -c "cd $(EXTENSION_FOLDER) && composer phpunit"
+ci: install composer-test
 
 .PHONY: ci-coverage
-ci-coverage: install
-	$(show-current-target)
-	$(compose-exec-wiki) bash -c "cd $(EXTENSION_FOLDER) && composer phpunit-coverage"
+ci-coverage: install composer-test-coverage
 
 .PHONY: install
 install: destroy up .install
@@ -37,24 +57,23 @@ down: .init .down
 destroy: .init .destroy
 
 .PHONY: bash
-bash: .init
-	$(show-current-target)
-	$(compose) exec wiki bash -c "cd $(EXTENSION_FOLDER) && bash"
+bash: up .bash
+
+# ======== General Docker-Compose Helper Targets ========
 
 .PHONY: show-logs
 show-logs: .init
 	$(show-current-target)
-	$(compose) logs -f || true
+	$(compose-ci) logs -f || true
 
 .PHONY: .build
 .build:
 	$(show-current-target)
-	$(compose) build --build-arg MW_VERSION=$(MW_VERSION) wiki
-
+	$(compose-ci) build wiki
 .PHONY: .up
 .up:
 	$(show-current-target)
-	$(compose) up -d
+	$(compose-ci) up -d
 
 .PHONY: .install
 .install: .wait-for-db
@@ -70,28 +89,48 @@ show-logs: .init
 .PHONY: .down
 .down:
 	$(show-current-target)
-	$(compose) down
+	$(compose-ci) down
 
 .PHONY: .destroy
 .destroy:
 	$(show-current-target)
-	$(compose) down -v
+	$(compose-ci) down -v
+
+.PHONY: .bash
+.bash: .init
+	$(show-current-target)
+	$(compose-ci) exec wiki bash -c "cd $(EXTENSION_FOLDER) && bash"
+
+# ======== Test Targets ========
+
+.PHONY: composer-test
+composer-test:
+	$(show-current-target)
+	$(compose-exec-wiki) bash -c "cd $(EXTENSION_FOLDER) && composer phpunit"
+
+.PHONY: composer-test-coverage
+composer-test-coverage:
+	$(show-current-target)
+	$(compose-exec-wiki) bash -c "cd $(EXTENSION_FOLDER) && composer phpunit-coverage"
+
+# ======== Helpers ========
+.PHONY: .init
+.init:
+	$(show-current-target)
+	$(eval COMPOSE_ARGS = --project-name ${extension}-$(DB_TYPE) --profile $(DB_TYPE))
+ifeq ($(DB_TYPE), sqlite)
+	$(eval WIKI_DB_CONFIG = --dbtype=$(DB_TYPE) --dbpath=/tmp/sqlite)
+else
+	$(eval WIKI_DB_CONFIG = --dbtype=$(DB_TYPE) --dbserver=$(DB_TYPE) --installdbuser=root --installdbpass=database)
+endif
+	@echo "COMPOSE_ARGS: $(COMPOSE_ARGS)"
 
 .PHONY: .wait-for-db
 .wait-for-db:
 	$(show-current-target)
-ifneq ($(DB_TYPE), sqlite)
+ifeq ($(DB_TYPE), mysql)
 	$(compose-run) wait-for $(DB_TYPE):3306 -t 120
+else ifeq ($(DB_TYPE), postgres)
+	$(compose-run) wait-for $(DB_TYPE):5432 -t 120
 endif
 
-.PHONY: .init
-.init:
-	$(show-current-target)
-ifeq ($(DB_TYPE), mysql)
-	$(eval COMPOSE_ARGS = --project-name idprovider-mysql --profile mysql)
-	$(eval WIKI_DB_CONFIG = --dbtype=mysql --dbserver=mysql --installdbuser=root --installdbpass=database)
-else
-	$(eval COMPOSE_ARGS = --project-name idprovider-sqlite)
-	$(eval WIKI_DB_CONFIG = --dbtype=sqlite --dbpath=/data/sqlite)
-endif
-	@echo "COMPOSE_ARGS: $(COMPOSE_ARGS)"
