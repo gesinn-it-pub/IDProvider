@@ -2,7 +2,7 @@ ARG MW_VERSION
 ARG PHP_VERSION
 ARG DB_TYPE
 
-FROM gesinn/mediawiki:${MW_VERSION}-php${PHP_VERSION}
+FROM gesinn/mediawiki-ci:${MW_VERSION}-php${PHP_VERSION}
 ENV EXTENSION=IDProvider
 
 COPY composer*.json /var/www/html/extensions/$EXTENSION/
