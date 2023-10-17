@@ -21,7 +21,7 @@ DB_IMAGE?=""
 
 # composer
 # Enables "composer update" inside of extension
-COMPOSER?=true
+COMPOSER_EXT?=true
 
 # Enables node.js related tests and "npm install"
 # NODE_JS?=true
