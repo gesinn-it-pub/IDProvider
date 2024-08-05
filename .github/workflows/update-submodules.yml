@@ -30,7 +30,7 @@ jobs:
 
       - name: Update submodules to latest commits
         run: |
-          git submodule update --remote --merge
+          git submodule update --init --remote
           git status
 
       - name: Check for submodule changes
@@ -41,7 +41,6 @@ jobs:
       - name: Commit submodule changes
         if: steps.check_submodule_update.outputs.needs_update == 'true'
         run: |
-          git submodule update --init --remote
           git status
           git commit -m "Update submodules to latest commits"
           git push origin update-submodules-branch --force || true
