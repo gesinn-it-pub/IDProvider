@@ -21,9 +21,14 @@ jobs:
           # Update submodules
           git submodule update --init --remote
 
-          # Capture the last commit ID of the submodule
-          SUBMODULE_COMMIT=$(git -C build rev-parse HEAD)
-          echo "Submodule commit: $SUBMODULE_COMMIT"
+          # Collect commit IDs for each submodule
+          SUBMODULES=$(git submodule--helper list | awk '{ print $4 }')
+          COMMIT_IDS=""
+          for SUBMODULE in $SUBMODULES; do
+            COMMIT_ID=$(git -C $SUBMODULE rev-parse HEAD)
+            COMMIT_IDS+="\n$SUBMODULE: $COMMIT_ID"
+          done
+          echo -e "Submodule commits:${COMMIT_IDS}"
 
           # Check for changes
           git status --porcelain
@@ -54,9 +59,10 @@ jobs:
             git commit -m "Update submodules to latest commits"
             git push origin $BRANCH_NAME
 
-            # Create a Pull Request with submodule commit ID in the title
-            PR_TITLE="Update submodules to latest commits (submodule commit: $SUBMODULE_COMMIT)"
-            gh pr create --title "$PR_TITLE" --body "This PR updates all submodules to their latest commits." --base master --head $BRANCH_NAME
+            # Create a Pull Request with submodule commit IDs in the title
+            PR_TITLE="Update submodules to latest commits"
+            PR_BODY="This PR updates all submodules to their latest commits.${COMMIT_IDS}"
+            gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base master --head $BRANCH_NAME
           else
             echo "No submodule updates found"
           fi
