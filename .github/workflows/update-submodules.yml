@@ -22,8 +22,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Fetch all branches
-        run: |
-          git fetch --all
+        run: git fetch --all
 
       - name: Checkout or create update branch
         run: |
@@ -32,19 +31,20 @@ jobs:
       - name: Update submodules to latest commits
         run: |
           git submodule update --remote --merge
-          git submodule status
+          git status
 
-      - name: Check for submodule updates
+      - name: Check for submodule changes
         id: check_submodule_update
         run: |
-          git diff --quiet || echo "Submodule updates found" && echo "::set-output name=needs_update::true"
-        
-      - name: Commit and push changes
+          git diff --quiet || echo "Submodule changes detected" && echo "::set-output name=needs_update::true"
+
+      - name: Commit submodule changes
         if: steps.check_submodule_update.outputs.needs_update == 'true'
         run: |
           git add .
+          git status
           git commit -m "Update submodules to latest commits"
-          git push origin update-submodules-branch --force
+          git push origin update-submodules-branch --force || true
 
       - name: Create or update Pull Request
         if: steps.check_submodule_update.outputs.needs_update == 'true'
