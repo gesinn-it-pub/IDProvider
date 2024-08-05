@@ -2,7 +2,7 @@ name: Update Submodules
 
 on:
   schedule:
-    - cron: '0 0 * * 0'
+    - cron: '0 0 * * 0' # Weekly schedule at midnight UTC
   workflow_dispatch:
 
 jobs:
@@ -21,60 +21,39 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Get default branch
-        id: default_branch
-        run: echo "::set-output name=branch::$(git rev-parse --abbrev-ref origin/HEAD | sed 's@^origin/@@')"
-
-      - name: Checkout default branch
-        run: git checkout ${{ steps.default_branch.outputs.branch }}
-
-      - name: Clean up old branches
+      - name: Fetch all branches
         run: |
           git fetch --all
-          for branch in $(git branch -r | grep -v '\->' | grep -v 'origin/HEAD' | grep -v 'origin/master' | sed 's/origin\///'); do
-            if git show-ref --verify --quiet refs/heads/$branch; then
-              echo "Deleting local branch: $branch"
-              git branch -D $branch || true
-            fi
-          done
 
-      - name: Create or update submodules branch
-        id: update_submodules
+      - name: Checkout or create update branch
         run: |
-          git fetch origin
           git checkout -B update-submodules-branch origin/update-submodules-branch || git checkout -b update-submodules-branch
-          git submodule update --init --remote
-          echo "Submodule status:"
-          git submodule status --recursive
-          echo "Local submodule commits:"
-          git submodule foreach 'echo $path: $(git rev-parse --short HEAD)'
-          echo "Remote submodule commits:"
-          git submodule foreach 'git fetch origin && echo $path: $(git rev-parse HEAD) vs $(git rev-parse @{u})'
-          echo "Git status:"
-          git status --porcelain
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "Submodule updates found"
-            echo "::set-output name=needs_update::true"
-          else
-            echo "No submodule updates found"
-            echo "::set-output name=needs_update::false"
-          fi
 
+      - name: Update submodules to latest commits
+        run: |
+          git submodule update --remote --merge
+          git submodule status
+
+      - name: Check for submodule updates
+        id: check_submodule_update
+        run: |
+          git diff --quiet || echo "Submodule updates found" && echo "::set-output name=needs_update::true"
+        
       - name: Commit and push changes
-        if: steps.update_submodules.outputs.needs_update == 'true'
+        if: steps.check_submodule_update.outputs.needs_update == 'true'
         run: |
           git add .
           git commit -m "Update submodules to latest commits"
           git push origin update-submodules-branch --force
 
       - name: Create or update Pull Request
-        if: steps.update_submodules.outputs.needs_update == 'true'
+        if: steps.check_submodule_update.outputs.needs_update == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
           commit-message: Update submodules
           committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           branch: update-submodules-branch
-          base: ${{ steps.default_branch.outputs.branch }}
+          base: main
           title: Update Submodules
-          body: This pull request updates all submodules to their latest commits.
+          body: This pull request updates submodules to their latest commits.
