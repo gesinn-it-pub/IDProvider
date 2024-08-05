@@ -28,11 +28,10 @@ jobs:
       - name: Checkout default branch
         run: git checkout ${{ steps.default_branch.outputs.branch }}
 
-      - name: Delete existing local branch if any
+      - name: Clean up old branches
         run: |
-          if git show-ref --verify --quiet refs/heads/update-submodules-branch; then
-            git branch -D update-submodules-branch
-          fi
+          git fetch --all
+          git branch -r | grep -v '\->' | grep -v 'origin/HEAD' | sed 's/origin\///' | xargs -n 1 git branch -D || true
 
       - name: Update all submodules
         id: update_submodules
