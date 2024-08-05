@@ -55,6 +55,6 @@ jobs:
           committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           branch: update-submodules-branch
-          base: main
+          base: master
           title: Update Submodules
           body: This pull request updates submodules to their latest commits.
