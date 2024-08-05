@@ -2,7 +2,7 @@ name: Update Submodules
 
 on:
   schedule:
-    - cron: '0 0 * * 0' # weakly, sunday, midnight
+    - cron: '0 0 * * 0'
   workflow_dispatch:
 
 jobs:
@@ -32,6 +32,10 @@ jobs:
             echo "::set-output name=needs_update::false"
           fi
 
+      - name: Get default branch
+        id: default_branch
+        run: echo "::set-output name=branch::$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')"
+
       - name: Commit and Push Changes
         if: steps.update_submodules.outputs.needs_update == 'true'
         run: |
@@ -48,5 +52,6 @@ jobs:
           committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           branch: update-submodules-branch
+          base: ${{ steps.default_branch.outputs.branch }}
           title: Update Submodules
           body: This pull request updates all submodules to their latest commits.
