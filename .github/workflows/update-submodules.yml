@@ -44,6 +44,7 @@ jobs:
       - name: Commit and Push Changes
         if: steps.update_submodules.outputs.needs_update == 'true'
         run: |
+          git checkout ${{ steps.default_branch.outputs.branch }}
           git checkout -b update-submodules-branch
           git add .
           git commit -m "Update submodules to latest commits"
