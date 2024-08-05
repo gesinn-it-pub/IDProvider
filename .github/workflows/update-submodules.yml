@@ -23,7 +23,7 @@ jobs:
       - name: Update all submodules
         id: update_submodules
         run: |
-          git submodule update --remote --merge
+          git submodule update --init --remote
           if [ -n "$(git status --porcelain)" ]; then
             echo "Submodule updates found"
             echo "::set-output name=needs_update::true"
