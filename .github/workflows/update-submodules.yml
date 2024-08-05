@@ -16,9 +16,16 @@ jobs:
           submodules: 'recursive'
           
       - name: Update submodules
+        id: update
         run: |
+          # Update submodules
           git submodule update --init --remote
 
+          # Capture the last commit ID of the submodule
+          SUBMODULE_COMMIT=$(git -C build rev-parse HEAD)
+          echo "Submodule commit: $SUBMODULE_COMMIT"
+
+          # Check for changes
           git status --porcelain
           if [ -n "$(git status --porcelain)" ]; then
             echo "Submodule updates found"
@@ -47,16 +54,11 @@ jobs:
             git commit -m "Update submodules to latest commits"
             git push origin $BRANCH_NAME
 
-            # Create a Pull Request
-            gh pr create --title "Update submodules" --body "This PR updates all submodules to their latest commits." --base master --head $BRANCH_NAME
+            # Create a Pull Request with submodule commit ID in the title
+            PR_TITLE="Update submodules to latest commits (submodule commit: $SUBMODULE_COMMIT)"
+            gh pr create --title "$PR_TITLE" --body "This PR updates all submodules to their latest commits." --base master --head $BRANCH_NAME
           else
             echo "No submodule updates found"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cleanup branches (Optional)
-        run: |
-          # Clean up local branches that are no longer on the remote
-          git fetch --prune
-          git branch -vv | awk '/: gone]/ {print $1}' | xargs git branch -d
