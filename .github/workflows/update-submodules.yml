@@ -37,6 +37,10 @@ jobs:
               git branch -D $BRANCH_NAME
             fi
 
+            # Set up Git identity
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+
             # Create a new branch and make changes
             git checkout -b $BRANCH_NAME
             git add .
