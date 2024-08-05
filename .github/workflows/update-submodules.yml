@@ -10,32 +10,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout default branch
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Get default branch
-        id: default_branch
-        run: |
-          echo "::set-output name=branch::$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')"
-
-      - name: Checkout default branch
-        run: git checkout ${{ steps.default_branch.outputs.branch }}
+          submodules: true
 
       - name: Set up Git
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
+      - name: Get default branch
+        id: default_branch
+        run: echo "::set-output name=branch::$(git rev-parse --abbrev-ref origin/HEAD | sed 's@^origin/@@')"
+
+      - name: Checkout default branch
+        run: git checkout ${{ steps.default_branch.outputs.branch }}
+
       - name: Delete existing local branch if any
         run: |
           if git show-ref --verify --quiet refs/heads/update-submodules-branch; then
             git branch -D update-submodules-branch
           fi
-
-      - name: Delete existing remote branch if any
-        run: git push origin --delete update-submodules-branch || true
 
       - name: Update all submodules
         id: update_submodules
@@ -49,7 +46,7 @@ jobs:
             echo "::set-output name=needs_update::false"
           fi
 
-      - name: Commit and Push Changes
+      - name: Create new branch and commit changes
         if: steps.update_submodules.outputs.needs_update == 'true'
         run: |
           git checkout -b update-submodules-branch
