@@ -1,0 +1,52 @@
+name: Update Submodules
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # weakly, sunday, midnight
+  workflow_dispatch:
+
+jobs:
+  update_submodules:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Update all submodules
+        id: update_submodules
+        run: |
+          git submodule update --remote --merge
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Submodule updates found"
+            echo "::set-output name=needs_update::true"
+          else
+            echo "No submodule updates found"
+            echo "::set-output name=needs_update::false"
+          fi
+
+      - name: Commit and Push Changes
+        if: steps.update_submodules.outputs.needs_update == 'true'
+        run: |
+          git checkout -b update-submodules-branch
+          git add .
+          git commit -m "Update submodules to latest commits"
+          git push origin update-submodules-branch
+
+      - name: Create Pull Request
+        if: steps.update_submodules.outputs.needs_update == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Update submodules
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          branch: update-submodules-branch
+          title: Update Submodules
+          body: This pull request updates all submodules to their latest commits.
