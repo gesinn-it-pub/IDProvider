@@ -44,7 +44,7 @@ jobs:
           git submodule foreach 'git add .'
           git add .
           git status
-          git commit -m "Update submodules to latest commits"
+          git commit -m "Update submodules to latest commits" || echo "No changes to commit"
           git push origin update-submodules-branch --force || true
 
       - name: Create or update Pull Request
