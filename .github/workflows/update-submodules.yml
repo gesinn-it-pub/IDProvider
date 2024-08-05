@@ -2,7 +2,7 @@ name: Update Submodules
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # Jede Woche, z.B. Sonntags um Mitternacht
+    - cron: '0 0 * * 0'  # Every Sunday at midnight
   workflow_dispatch:
 
 jobs:
@@ -23,15 +23,21 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             echo "Submodule updates found"
 
-            # Create a new branch for the changes
             BRANCH_NAME="update-submodules-branch"
-            
-            # Check if branch already exists on the remote
+
+            # Delete the remote branch if it exists
             if git ls-remote --exit-code --heads origin $BRANCH_NAME; then
-              echo "Branch $BRANCH_NAME already exists. Exiting."
-              exit 1
+              echo "Deleting existing remote branch $BRANCH_NAME"
+              git push origin --delete $BRANCH_NAME
             fi
 
+            # Delete the local branch if it exists
+            if git show-ref --verify --quiet refs/heads/$BRANCH_NAME; then
+              echo "Deleting existing local branch $BRANCH_NAME"
+              git branch -D $BRANCH_NAME
+            fi
+
+            # Create a new branch and make changes
             git checkout -b $BRANCH_NAME
             git add .
             git commit -m "Update submodules to latest commits"
