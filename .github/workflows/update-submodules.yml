@@ -1,60 +1,54 @@
 name: Update Submodules
 
 on:
+  push:
+    branches:
+      - main  # oder master, je nach Haupt-Branch
   schedule:
-    - cron: '0 0 * * 0' # Weekly schedule at midnight UTC
-  workflow_dispatch:
+    - cron: '0 0 * * 0'  # Jede Woche, z.B. Sonntags um Mitternacht
 
 jobs:
-  update_submodules:
+  update-submodules:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-          submodules: true
-
-      - name: Set up Git
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-      - name: Fetch all branches
-        run: git fetch --all
-
-      - name: Checkout or create update branch
-        run: |
-          git checkout -B update-submodules-branch origin/update-submodules-branch || git checkout -b update-submodules-branch
-
-      - name: Update submodules to latest commits
+          submodules: 'recursive'
+          
+      - name: Update submodules
         run: |
           git submodule update --remote --merge
-          git status
 
-      - name: Check for submodule changes
-        id: check_submodule_update
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Submodule updates found"
+
+            # Create a new branch for the changes
+            BRANCH_NAME="update-submodules-branch"
+            
+            # Check if branch already exists on the remote
+            if git ls-remote --exit-code --heads origin $BRANCH_NAME; then
+              echo "Branch $BRANCH_NAME already exists. Exiting."
+              exit 1
+            fi
+
+            git checkout -b $BRANCH_NAME
+            git add .
+            git commit -m "Update submodules to latest commits"
+            git push origin $BRANCH_NAME
+
+            # Create a Pull Request
+            gh pr create --title "Update submodules" --body "This PR updates all submodules to their latest commits." --base main --head $BRANCH_NAME
+          else
+            echo "No submodule updates found"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup branches (Optional)
         run: |
-          git diff --quiet || echo "Submodule changes detected" && echo "::set-output name=needs_update::true"
-
-      - name: Commit submodule changes
-        if: steps.check_submodule_update.outputs.needs_update == 'true'
-        run: |
-          git submodule foreach 'git add .'
-          git add .
-          git status
-          git commit -m "Update submodules to latest commits" || echo "No changes to commit"
-          git push origin update-submodules-branch --force || true
-
-      - name: Create or update Pull Request
-        if: steps.check_submodule_update.outputs.needs_update == 'true'
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: Update submodules
-          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
-          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
-          branch: update-submodules-branch
-          base: master
-          title: Update Submodules
-          body: This pull request updates submodules to their latest commits.
+          # Clean up local branches that are no longer on the remote
+          git fetch --prune
+          git branch -vv | awk '/: gone]/ {print $1}' | xargs git branch -d
