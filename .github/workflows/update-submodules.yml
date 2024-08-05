@@ -22,7 +22,7 @@ jobs:
           git submodule update --init --remote
 
           # Collect commit IDs for each submodule
-          COMMIT_IDS=$(git submodule foreach --quiet 'echo $path: $(git rev-parse HEAD)')
+          COMMIT_IDS=$(git submodule foreach --quiet 'echo $path: $(git rev-parse HEAD)' | tr '\n' '\r')
 
           echo -e "Submodule commits:\n${COMMIT_IDS}"
 
@@ -57,7 +57,7 @@ jobs:
 
             # Create a Pull Request with submodule commit IDs in the title
             PR_TITLE="Update submodules to latest commits"
-            PR_BODY="This PR updates all submodules to their latest commits:\n\n${COMMIT_IDS}"
+            PR_BODY="This PR updates all submodules to their latest commits.\n\n${COMMIT_IDS}"
             gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base master --head $BRANCH_NAME
           else
             echo "No submodule updates found"
