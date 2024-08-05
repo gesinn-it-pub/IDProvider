@@ -24,7 +24,8 @@ jobs:
           # Collect commit IDs for each submodule
           COMMIT_IDS=$(git submodule foreach --quiet 'echo $path: $(git rev-parse HEAD)' | tr '\n' '\r')
 
-          echo -e "Submodule commits:\n${COMMIT_IDS}"
+          echo "Submodule commits:"
+          echo "$COMMIT_IDS"
 
           # Check for changes
           git status --porcelain
@@ -58,7 +59,8 @@ jobs:
             # Create a Pull Request with submodule commit IDs in the title
             PR_TITLE="Update submodules to latest commits"
             PR_BODY="This PR updates all submodules to their latest commits.\n\n${COMMIT_IDS}"
-            gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base master --head $BRANCH_NAME
+            echo "$PR_BODY" > pr_body.txt
+            gh pr create --title "$PR_TITLE" --body "$(cat pr_body.txt)" --base master --head $BRANCH_NAME
           else
             echo "No submodule updates found"
           fi
