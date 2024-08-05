@@ -46,24 +46,19 @@ jobs:
             echo "::set-output name=needs_update::false"
           fi
 
-      - name: Create new branch and commit changes
+      - name: Create a new branch for changes
         if: steps.update_submodules.outputs.needs_update == 'true'
         run: |
           git checkout -b update-submodules-branch
+
+      - name: Commit and push changes
+        if: steps.update_submodules.outputs.needs_update == 'true'
+        run: |
           git add .
           git commit -m "Update submodules to latest commits"
+          git push origin update-submodules-branch --force
 
-      - name: Pull latest changes from remote
-        if: steps.update_submodules.outputs.needs_update == 'true'
-        run: |
-          git pull --rebase origin update-submodules-branch || true
-
-      - name: Push changes
-        if: steps.update_submodules.outputs.needs_update == 'true'
-        run: |
-          git push origin update-submodules-branch
-
-      - name: Create Pull Request
+      - name: Create or update Pull Request
         if: steps.update_submodules.outputs.needs_update == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
