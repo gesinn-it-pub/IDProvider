@@ -33,9 +33,11 @@ jobs:
           git fetch --all
           git branch -r | grep -v '\->' | grep -v 'origin/HEAD' | sed 's/origin\///' | xargs -n 1 git branch -D || true
 
-      - name: Update all submodules
+      - name: Create or update submodules branch
         id: update_submodules
         run: |
+          git fetch origin
+          git checkout -B update-submodules-branch origin/update-submodules-branch || git checkout -b update-submodules-branch
           git submodule update --init --remote
           if [ -n "$(git status --porcelain)" ]; then
             echo "Submodule updates found"
@@ -44,11 +46,6 @@ jobs:
             echo "No submodule updates found"
             echo "::set-output name=needs_update::false"
           fi
-
-      - name: Create a new branch for changes
-        if: steps.update_submodules.outputs.needs_update == 'true'
-        run: |
-          git checkout -b update-submodules-branch
 
       - name: Commit and push changes
         if: steps.update_submodules.outputs.needs_update == 'true'
