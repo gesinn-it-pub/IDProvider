@@ -44,7 +44,13 @@ jobs:
           git fetch origin
           git checkout -B update-submodules-branch origin/update-submodules-branch || git checkout -b update-submodules-branch
           git submodule update --init --remote
+          echo "Submodule status:"
           git submodule status --recursive
+          echo "Local submodule commits:"
+          git submodule foreach 'echo $path: $(git rev-parse --short HEAD)'
+          echo "Remote submodule commits:"
+          git submodule foreach 'git fetch origin && echo $path: $(git rev-parse HEAD) vs $(git rev-parse @{u})'
+          echo "Git status:"
           git status --porcelain
           if [ -n "$(git status --porcelain)" ]; then
             echo "Submodule updates found"
