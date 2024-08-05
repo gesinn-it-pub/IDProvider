@@ -48,7 +48,7 @@ jobs:
             git push origin $BRANCH_NAME
 
             # Create a Pull Request
-            gh pr create --title "Update submodules" --body "This PR updates all submodules to their latest commits." --base main --head $BRANCH_NAME
+            gh pr create --title "Update submodules" --body "This PR updates all submodules to their latest commits." --base master --head $BRANCH_NAME
           else
             echo "No submodule updates found"
           fi
