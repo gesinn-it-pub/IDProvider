@@ -20,6 +20,13 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
+      - name: Get default branch
+        id: default_branch
+        run: echo "::set-output name=branch::$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')"
+
+      - name: Checkout default branch
+        run: git checkout ${{ steps.default_branch.outputs.branch }}
+
       - name: Update all submodules
         id: update_submodules
         run: |
@@ -32,20 +39,13 @@ jobs:
             echo "::set-output name=needs_update::false"
           fi
 
-      - name: Get default branch
-        id: default_branch
-        run: echo "::set-output name=branch::$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')"
-
       - name: Delete existing branch if any
         if: steps.update_submodules.outputs.needs_update == 'true'
-        run: |
-          git push origin --delete update-submodules-branch || true
+        run: git push origin --delete update-submodules-branch || true
 
       - name: Commit and Push Changes
         if: steps.update_submodules.outputs.needs_update == 'true'
         run: |
-          git checkout ${{ steps.default_branch.outputs.branch }}
-          git pull origin ${{ steps.default_branch.outputs.branch }}
           git checkout -b update-submodules-branch
           git add .
           git commit -m "Update submodules to latest commits"
