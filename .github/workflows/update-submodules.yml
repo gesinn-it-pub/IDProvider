@@ -31,7 +31,12 @@ jobs:
       - name: Clean up old branches
         run: |
           git fetch --all
-          git branch -r | grep -v '\->' | grep -v 'origin/HEAD' | sed 's/origin\///' | xargs -n 1 git branch -D || true
+          for branch in $(git branch -r | grep -v '\->' | grep -v 'origin/HEAD' | grep -v 'origin/master' | sed 's/origin\///'); do
+            if git show-ref --verify --quiet refs/heads/$branch; then
+              echo "Deleting local branch: $branch"
+              git branch -D $branch || true
+            fi
+          done
 
       - name: Create or update submodules branch
         id: update_submodules
