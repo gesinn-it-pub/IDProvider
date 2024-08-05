@@ -39,7 +39,7 @@ jobs:
           git fetch origin
           git checkout -B update-submodules-branch origin/update-submodules-branch || git checkout -b update-submodules-branch
           git submodule update --init --remote
-          git submodule status
+          git submodule status --recursive
           git status --porcelain
           if [ -n "$(git status --porcelain)" ]; then
             echo "Submodule updates found"
