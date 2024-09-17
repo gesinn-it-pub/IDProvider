@@ -66,7 +66,13 @@ class IdProviderFactory {
 	private static function isUniqueId() {
 		return function ( $id ) {
 			$title = Title::newFromText( $id );
-			$page = WikiPage::factory( $title );
+
+			// MW 1.36+
+			if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+				$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
+			} else {
+				$page = WikiPage::factory( $title );
+			}
 
 			return !$page->exists();
 		};
