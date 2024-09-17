@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     continue-on-error: ${{ matrix.experimental }}
 
     strategy:
@@ -38,12 +38,12 @@ jobs:
             database_image: "mariadb:10"
             coverage: false
             experimental: true
-          - mediawiki_version: 1.39
-            php_version: 8.1
-            database_type: postgres
-            database_image: "postgres:14"
-            coverage: false
-            experimental: true
+          # - mediawiki_version: 1.39
+          #   php_version: 8.1
+          #   database_type: postgres
+          #   database_image: "postgres:14"
+          #   coverage: false
+          #   experimental: true
     env:
       MW_VERSION: ${{ matrix.mediawiki_version }}
       PHP_VERSION: ${{ matrix.php_version }}
