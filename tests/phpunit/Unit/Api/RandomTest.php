@@ -23,7 +23,10 @@ use PHPUnit\Framework\TestCase;
 class RandomTest extends TestCase {
 
 	public function testGetExamples() {
-		$random = new Random( new ApiMain(), null );
+		// Handle module name based on MediaWiki version
+        $moduleName = version_compare( MW_VERSION, '1.40', '>=' ) ? 'idprovider-random' : null;
+
+		$random = new Random( new ApiMain(), $moduleName );
 		$messages = $random->getExamplesMessages();
 		$this->assertCount( 2, $messages );
 	}
