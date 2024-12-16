@@ -50,4 +50,42 @@ class IdProviderFactoryTest extends TestCase {
 		$provider = IdProviderFactory::increment();
 		$this->assertEquals( IncrementIdGenerator::class, $provider->generatorClass() );
 	}
+
+	public function testIsUniqueIdWhenIdIsInteger() {	
+		// Call the private method using Reflection
+		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'isUniqueId' );
+		$reflection->setAccessible( true );
+		$isUniqueClosure = $reflection->invoke( null );
+	
+		$this->assertFalse( $isUniqueClosure( 1 ) );
+	}
+
+	public function testIsUniqueIdWhenIdIsText() {	
+		// Call the private method using Reflection
+		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'isUniqueId' );
+		$reflection->setAccessible( true );
+		$isUniqueClosure = $reflection->invoke( null );
+	
+		$this->assertTrue( $isUniqueClosure( 'NewPage' ) );
+	}
+
+	public function testIsUniqueIdWhenPageNotExists() {	
+		// Call the private method using Reflection
+		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'isUniqueId' );
+		$reflection->setAccessible( true );
+		$isUniqueClosure = $reflection->invoke( null );
+	
+		$this->assertTrue( $isUniqueClosure( 10 ) );
+	}
+
+	public function testParamGet() {
+		// Call the private method using Reflection
+		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'paramGet' );
+		$reflection->setAccessible( true );
+	
+		$params = [ 'key' => 'value' ];
+	
+		$this->assertEquals( 'value', $reflection->invoke( null, $params, 'key', 'default' ) );
+		$this->assertEquals( 'default', $reflection->invoke( null, $params, 'missing_key', 'default' ) );
+	}
 }

@@ -65,7 +65,16 @@ class IdProviderFactory {
 	 */
 	private static function isUniqueId() {
 		return function ( $id ) {
-			$title = Title::newFromText( $id );
+			// Determine if $id is numeric or a string
+			if ( is_numeric( $id ) ) {
+				$title = Title::newFromID( (int)$id );
+			} else {
+				$title = Title::newFromText( $id );
+			}
+			// If no Title object is found, the page does not exist
+			if ( $title === null ) {
+				return true;
+			}
 
 			// MW 1.36+
 			if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
