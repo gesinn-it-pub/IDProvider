@@ -23,7 +23,9 @@ use PHPUnit\Framework\TestCase;
 class IncrementTest extends TestCase {
 
 	public function testGetExamples() {
-		$increment = new Increment( new ApiMain(), null );
+		$moduleName = version_compare( MW_VERSION, '1.40', '>=' ) ? 'idprovider-increment' : null;
+
+		$increment = new Increment( new ApiMain(), $moduleName );
 		$messages = $increment->getExamplesMessages();
 		$this->assertCount( 2, $messages );
 	}
