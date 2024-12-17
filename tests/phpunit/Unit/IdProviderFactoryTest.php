@@ -51,31 +51,13 @@ class IdProviderFactoryTest extends TestCase {
 		$this->assertEquals( IncrementIdGenerator::class, $provider->generatorClass() );
 	}
 
-	public function testIsUniqueIdWhenIdIsInteger() {	
-		// Call the private method using Reflection
-		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'isUniqueId' );
-		$reflection->setAccessible( true );
-		$isUniqueClosure = $reflection->invoke( null );
-	
-		$this->assertFalse( $isUniqueClosure( 1 ) );
-	}
-
-	public function testIsUniqueIdWhenIdIsText() {	
+	public function testIsUniqueId() {	
 		// Call the private method using Reflection
 		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'isUniqueId' );
 		$reflection->setAccessible( true );
 		$isUniqueClosure = $reflection->invoke( null );
 	
 		$this->assertTrue( $isUniqueClosure( 'NewPage' ) );
-	}
-
-	public function testIsUniqueIdWhenPageNotExists() {	
-		// Call the private method using Reflection
-		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'isUniqueId' );
-		$reflection->setAccessible( true );
-		$isUniqueClosure = $reflection->invoke( null );
-	
-		$this->assertTrue( $isUniqueClosure( 10 ) );
 	}
 
 	public function testParamGet() {

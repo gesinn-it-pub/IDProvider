@@ -59,18 +59,16 @@ class IdProviderFactory {
 	}
 
 	/**
-	 * Checks whether a WikiPage with the following id/title already exists
+	 * Function to check if string id/title already exists, i.e. is already used as a
+	 * WikiPage (if page already exists)
 	 *
+	 * @param string $text The title or ID to check for uniqueness of the wiki page.
 	 * @return \Closure
 	 */
 	private static function isUniqueId() {
-		return function ( $id ) {
-			// Determine if $id is numeric or a string
-			if ( is_numeric( $id ) ) {
-				$title = Title::newFromID( (int)$id );
-			} else {
-				$title = Title::newFromText( $id );
-			}
+		return function ( $text ) {
+			$title = Title::newFromText( $text );
+			
 			// If no Title object is found, the page does not exist
 			if ( $title === null ) {
 				return true;
