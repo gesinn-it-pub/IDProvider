@@ -17,6 +17,7 @@ use MediaWiki\Extension\IdProvider\Generators\IncrementIdGenerator;
 use MediaWiki\Extension\IdProvider\Generators\UuidGenerator;
 use MediaWiki\Extension\IdProvider\IdProviderFactory;
 use PHPUnit\Framework\TestCase;
+use Title;
 
 /**
  * @group IDProvider
@@ -57,7 +58,27 @@ class IdProviderFactoryTest extends TestCase {
 		$reflection->setAccessible( true );
 		$isUniqueClosure = $reflection->invoke( null );
 	
-		$this->assertTrue( $isUniqueClosure( 'NewPage' ) );
+		// check when id/title is from the page which exists and return false when page already exists
+        $this->assertFalse( $isUniqueClosure( 'Main Page' ) );
+
+		// check when id/title is from the page which not exists and return true if page do not exists
+        $this->assertTrue( $isUniqueClosure( 'Non existing page' ) );
+	}
+
+	public function testGetUniqueIdCheckerWhenTitleIsMalformed() {	
+		// Call the private method using Reflection
+		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'getUniqueIdChecker' );
+		$reflection->setAccessible( true );
+		$isUniqueClosure = $reflection->invoke( null );
+
+		$title = Title::newFromText( 'nonexisting title' );
+
+		// Asserts that an InvalidArgumentException is thrown and that message is good
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( '$text must be a string' );
+
+		// add object instead of string, it should thrown the InvalidArgumentException
+		$isUniqueClosure( $title );
 	}
 
 	public function testParamGet() {
