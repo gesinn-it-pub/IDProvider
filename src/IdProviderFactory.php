@@ -59,11 +59,12 @@ class IdProviderFactory {
 	}
 
 	/**
-	 * Function to check if string id/title already exists, i.e. is already used as a
-	 * WikiPage (if page already exists)
+	 * Returns a closure that checks if a string ID or title is unique by verifying whether
+	 * the corresponding WikiPage already exists. The closure can be invoked later with a specific
+	 * title or ID to check for its uniqueness.
 	 *
-	 * @param string $text The title or ID to check for uniqueness of the wiki page.
-	 * @return \Closure
+	 * @return \Closure A closure that takes a string $text as input and returns a boolean indicating
+	 *                  whether the WikiPage associated with the given title/ID exists or not.
 	 */
 	private static function getUniqueIdChecker() {
 		return function ( $text ) {
