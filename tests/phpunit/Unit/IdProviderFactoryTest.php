@@ -51,9 +51,9 @@ class IdProviderFactoryTest extends TestCase {
 		$this->assertEquals( IncrementIdGenerator::class, $provider->generatorClass() );
 	}
 
-	public function testIsUniqueId() {	
+	public function testGetUniqueIdChecker() {	
 		// Call the private method using Reflection
-		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'isUniqueId' );
+		$reflection = new \ReflectionMethod( IdProviderFactory::class, 'getUniqueIdChecker' );
 		$reflection->setAccessible( true );
 		$isUniqueClosure = $reflection->invoke( null );
 	

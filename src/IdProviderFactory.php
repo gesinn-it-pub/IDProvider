@@ -39,7 +39,7 @@ class IdProviderFactory {
 	}
 
 	private static function provider( $generator ) {
-		return new IdProvider( $generator, self::isUniqueId() );
+		return new IdProvider( $generator, self::getUniqueIdChecker() );
 	}
 
 	private static function dbExecute() {
@@ -65,7 +65,7 @@ class IdProviderFactory {
 	 * @param string $text The title or ID to check for uniqueness of the wiki page.
 	 * @return \Closure
 	 */
-	private static function isUniqueId() {
+	private static function getUniqueIdChecker() {
 		return function ( $text ) {
 			$title = Title::newFromText( $text );
 			
