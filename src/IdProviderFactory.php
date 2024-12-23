@@ -67,8 +67,8 @@ class IdProviderFactory {
 	 *                  whether the WikiPage associated with the given title/ID exists or not.
 	 */
 	private static function getUniqueIdChecker() {
-		return function ( $text ) {
-			$title = Title::newFromText( $text );
+		return function ( $id ) {
+			$title = Title::newFromText( $id );
 			
 			// If no Title object is found, the page does not exist
 			if ( $title === null ) {
