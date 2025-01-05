@@ -39,7 +39,7 @@ class IdProviderFactory {
 	}
 
 	private static function provider( $generator ) {
-		return new IdProvider( $generator, self::isUniqueId() );
+		return new IdProvider( $generator, self::getUniqueIdChecker() );
 	}
 
 	private static function dbExecute() {
@@ -59,13 +59,21 @@ class IdProviderFactory {
 	}
 
 	/**
-	 * Checks whether a WikiPage with the following id/title already exists
+	 * Returns a closure that checks if a string ID or title is unique by verifying whether
+	 * the corresponding WikiPage already exists. The closure can be invoked later with a specific
+	 * title or ID to check for its uniqueness.
 	 *
-	 * @return \Closure
+	 * @return \Closure A closure that takes a string $text as input and returns a boolean indicating
+	 *                  whether the WikiPage associated with the given title/ID exists or not.
 	 */
-	private static function isUniqueId() {
+	private static function getUniqueIdChecker() {
 		return function ( $id ) {
 			$title = Title::newFromText( $id );
+			
+			// If no Title object is found, the page does not exist
+			if ( $title === null ) {
+				return true;
+			}
 
 			// MW 1.36+
 			if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
