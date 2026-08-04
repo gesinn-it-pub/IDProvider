@@ -14,13 +14,13 @@ namespace Tests\Unit;
 
 use ApiMain;
 use MediaWiki\Extension\IdProvider\Api\Random;
-use PHPUnit\Framework\TestCase;
+use MediaWikiIntegrationTestCase;
 
 /**
  * @group IDProvider
  * @covers \MediaWiki\Extension\IdProvider\Api\Random
  */
-class RandomTest extends TestCase {
+class RandomTest extends MediaWikiIntegrationTestCase {
 
 	public function testGetExamples() {
 		// Handle module name based on MediaWiki version
