@@ -29,15 +29,15 @@ class IdProvider {
 	 * @var callable Function to decide if string ID already exists, i.e. is already used as a
 	 * WikiPage
 	 */
-	private $isUniqueId;
+	private $getUniqueIdChecker;
 
 	/**
 	 * @param $generator
-	 * @param null $isUniqueId
+	 * @param null $getUniqueIdChecker
 	 */
-	public function __construct( $generator, $isUniqueId = null ) {
+	public function __construct( $generator, $getUniqueIdChecker = null ) {
 		$this->generator = $generator;
-		$this->isUniqueId = $isUniqueId;
+		$this->getUniqueIdChecker = $getUniqueIdChecker;
 	}
 
 	public function getId( array $params = [] ): string {
@@ -47,7 +47,7 @@ class IdProvider {
 		$prefix = trim( $prefix );
 		$id = $prefix . $this->generator->generate();
 		if ( !$skipUniqueTest ) {
-			while ( !( $this->isUniqueId )( $id ) ) {
+			while ( !( $this->getUniqueIdChecker )( $id ) ) {
 				$id = $prefix . $this->generator->generate();
 			}
 		}
