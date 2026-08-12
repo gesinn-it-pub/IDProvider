@@ -12,6 +12,10 @@
 
 namespace MediaWiki\Extension\IdProvider;
 
+use MediaWiki\Extension\IdProvider\Generators\FakeIdGenerator;
+use MediaWiki\Extension\IdProvider\Generators\IncrementIdGenerator;
+use MediaWiki\Extension\IdProvider\Generators\UuidGenerator;
+
 /**
  * The actual IDProvider Functions
  *
@@ -23,6 +27,9 @@ namespace MediaWiki\Extension\IdProvider;
  */
 class IdProvider {
 
+	/**
+	 * @var FakeIdGenerator|IncrementIdGenerator|UuidGenerator
+	 */
 	private $generator;
 
 	/**
@@ -32,7 +39,7 @@ class IdProvider {
 	private $isUniqueId;
 
 	/**
-	 * @param $generator
+	 * @param FakeIdGenerator|IncrementIdGenerator|UuidGenerator $generator
 	 * @param callable|null $isUniqueId
 	 */
 	public function __construct( $generator, $isUniqueId = null ) {
@@ -59,6 +66,12 @@ class IdProvider {
 		return get_class( $this->generator );
 	}
 
+	/**
+	 * @param array $params
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
 	private static function paramGet( array $params, string $key, $default = null ) {
 		return isset( $params[$key] ) ? trim( $params[$key] ) : $default;
 	}

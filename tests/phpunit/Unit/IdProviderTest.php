@@ -40,11 +40,13 @@ class IdProviderTest extends TestCase {
 	}
 
 	private static function isUniqueId( $existingId ): \Closure {
-		return function ( $id ) use ( $existingId ) { return $id !== $existingId; };
+		return static function ( $id ) use ( $existingId ) { return $id !== $existingId;
+		};
 	}
 
 	private static function noopIsUniqueId(): \Closure {
-		return function () { return true; };
+		return static function () { return true;
+		};
 	}
 
 	private static function generator( $ids ) {
@@ -52,7 +54,9 @@ class IdProviderTest extends TestCase {
 
 			private $ids;
 
-			public function __construct( $ids ) { $this->ids = $ids; }
+			public function __construct( $ids ) {
+				$this->ids = $ids;
+			}
 
 			public function generate() {
 				return array_shift( $this->ids );

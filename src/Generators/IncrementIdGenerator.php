@@ -17,14 +17,25 @@ use Wikimedia\Rdbms\DBUnexpectedError;
 
 class IncrementIdGenerator {
 
+	/**
+	 * @var callable
+	 */
 	private $dbExecute;
+
+	/**
+	 * @var string
+	 */
 	private $prefix;
+
+	/**
+	 * @var int
+	 */
 	private $padding;
 
 	/**
-	 * @param $dbExecute
-	 * @param $prefix
-	 * @param $padding
+	 * @param callable $dbExecute
+	 * @param string $prefix
+	 * @param int $padding
 	 * @throws Exception
 	 */
 	public function __construct( $dbExecute, $prefix, $padding ) {
@@ -61,10 +72,11 @@ class IncrementIdGenerator {
 	 *
 	 */
 	private function calculateIncrement( string $prefix ) {
-		return ( $this->dbExecute )( function ( $dbw ) use ( $prefix ) {
+		$fname = __METHOD__;
+		return ( $this->dbExecute )( static function ( $dbw ) use ( $prefix, $fname ) {
 			$prefixIncrement = $dbw->select( 'idprovider_increments', 'increment', [
 				'prefix' => $prefix,
-			], __METHOD__ );
+			], $fname );
 
 			if ( $prefixIncrement->numRows() <= 0 ) {
 				$dbw->insert( 'idprovider_increments', [ 'prefix' => $prefix, 'increment' => 1 ] );

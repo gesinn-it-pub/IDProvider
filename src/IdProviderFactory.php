@@ -16,11 +16,14 @@ use MediaWiki\Extension\IdProvider\Generators\FakeIdGenerator;
 use MediaWiki\Extension\IdProvider\Generators\IncrementIdGenerator;
 use MediaWiki\Extension\IdProvider\Generators\UuidGenerator;
 use MediaWiki\MediaWikiServices;
-use MWException;
 use Title;
 
 class IdProviderFactory {
 
+	/**
+	 * @param array $params
+	 * @return IdProvider
+	 */
 	public static function increment( array $params = [] ) {
 		$prefix = self::paramGet( $params, 'prefix', '' );
 		$padding = self::paramGet( $params, 'padding', 1 );
@@ -30,6 +33,10 @@ class IdProviderFactory {
 		return self::provider( $generator );
 	}
 
+	/**
+	 * @param array $params
+	 * @return IdProvider
+	 */
 	public static function random( array $params = [] ) {
 		$type = self::paramGet( $params, 'type', 'uuid' );
 		$generator = $type === 'fakeid' ? ( new FakeIdGenerator ) : ( new UuidGenerator );
@@ -37,13 +44,20 @@ class IdProviderFactory {
 		return self::provider( $generator );
 	}
 
+	/**
+	 * @param FakeIdGenerator|IncrementIdGenerator|UuidGenerator $generator
+	 * @return IdProvider
+	 */
 	private static function provider( $generator ) {
 		return new IdProvider( $generator, self::isUniqueId() );
 	}
 
+	/**
+	 * @return callable
+	 */
 	private static function dbExecute() {
 		$fname = __METHOD__;
-		return function ( $action ) use ( $fname ) {
+		return static function ( $action ) use ( $fname ) {
 			// Use a separate DB connection here to be able to avoid concurrency issues and
 			// not disturb possible surrounding transactions. (This seems to be natural as
 			// the creation of IDs is completely independent of actual MediaWiki data.)
@@ -64,7 +78,7 @@ class IdProviderFactory {
 	 * @return \Closure
 	 */
 	private static function isUniqueId() {
-		return function ( $id ) {
+		return static function ( $id ) {
 			$title = Title::newFromText( $id );
 			$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 
@@ -72,6 +86,12 @@ class IdProviderFactory {
 		};
 	}
 
+	/**
+	 * @param array $params
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
 	private static function paramGet( array $params, string $key, $default = null ) {
 		return isset( $params[$key] ) ? trim( $params[$key] ) : $default;
 	}
