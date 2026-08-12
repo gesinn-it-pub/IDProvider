@@ -26,14 +26,14 @@ class IdProvider {
 	private $generator;
 
 	/**
-	 * @var callable Function to decide if string ID already exists, i.e. is already used as a
+	 * @var callable|null Function to decide if string ID already exists, i.e. is already used as a
 	 * WikiPage
 	 */
 	private $isUniqueId;
 
 	/**
 	 * @param $generator
-	 * @param null $isUniqueId
+	 * @param callable|null $isUniqueId
 	 */
 	public function __construct( $generator, $isUniqueId = null ) {
 		$this->generator = $generator;

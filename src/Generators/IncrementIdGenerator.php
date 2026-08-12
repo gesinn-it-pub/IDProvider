@@ -44,7 +44,7 @@ class IncrementIdGenerator {
 		$id = $this->calculateIncrement( $this->prefix );
 
 		if ( $this->padding && $this->padding > 0 ) {
-			$id = str_pad( $id, $this->padding, '0', STR_PAD_LEFT );
+			$id = str_pad( (string)$id, $this->padding, '0', STR_PAD_LEFT );
 		}
 
 		return $id;

@@ -18,7 +18,6 @@ use MediaWiki\Extension\IdProvider\Generators\UuidGenerator;
 use MediaWiki\MediaWikiServices;
 use MWException;
 use Title;
-use WikiPage;
 
 class IdProviderFactory {
 
@@ -43,7 +42,8 @@ class IdProviderFactory {
 	}
 
 	private static function dbExecute() {
-		return function ( $action ) {
+		$fname = __METHOD__;
+		return function ( $action ) use ( $fname ) {
 			// Use a separate DB connection here to be able to avoid concurrency issues and
 			// not disturb possible surrounding transactions. (This seems to be natural as
 			// the creation of IDs is completely independent of actual MediaWiki data.)
@@ -53,7 +53,7 @@ class IdProviderFactory {
 
 			$result = $action( $dbw );
 
-			$lb->disable();
+			$lb->disable( $fname );
 			return $result;
 		};
 	}
@@ -66,13 +66,7 @@ class IdProviderFactory {
 	private static function isUniqueId() {
 		return function ( $id ) {
 			$title = Title::newFromText( $id );
-
-			// MW 1.36+
-			if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
-				$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
-			} else {
-				$page = WikiPage::factory( $title );
-			}
+			$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 
 			return !$page->exists();
 		};

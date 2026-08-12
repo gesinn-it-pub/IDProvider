@@ -22,7 +22,7 @@ class FakeIdGenerator {
 
 	public function generate(): string {
 		// Generates a random string of length 1-2.
-		$id = base_convert( rand( 0, 36 ^ 2 ), 10, 36 );
+		$id = base_convert( (string)rand( 0, 36 ^ 2 ), 10, 36 );
 
 		// This will "compress" the uniqid (some sort of microtimestamp) to a more dense string
 		$id .= base_convert( uniqid(), 10, 36 );
