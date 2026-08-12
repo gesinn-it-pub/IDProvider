@@ -16,7 +16,6 @@ namespace MediaWiki\Extension\IdProvider\Generators;
  * Generates a Fake ID that is very likely to be truly unique (no guarantee however!)
  *
  * This is achieved through mixing a milli-timestamp (php uniqid();) with a random string
- *
  */
 class FakeIdGenerator {
 

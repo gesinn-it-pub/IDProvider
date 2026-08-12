@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Phan static analysis, wired into CI as a dedicated step on the coverage matrix row.
 
+### Changed
+
+- Bumped `mediawiki/mediawiki-codesniffer` from 45.0.0 to 48.0.0, the highest version
+  compatible with the CI container's PHP 8.1, resolving new `ClassAnnotations`,
+  `CommentBeforeClass`, `PropertyDocumentation`, and `FunctionComment`/
+  `ClassDocumentation` sniff violations along the way.
+
 ### Fixed
 
 - Race condition in `IncrementIdGenerator::calculateIncrement()`: concurrent requests

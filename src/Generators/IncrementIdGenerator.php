@@ -69,7 +69,6 @@ class IncrementIdGenerator {
 	 *
 	 * @throws DBUnexpectedError
 	 * @throws Exception
-	 *
 	 */
 	private function calculateIncrement( string $prefix ) {
 		$fname = __METHOD__;
