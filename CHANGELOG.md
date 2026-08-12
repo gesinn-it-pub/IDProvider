@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   types, nullable `$isUniqueId`, missing `$fname` argument to
   `ILoadBalancerForOwner::disable()`, unreachable pre-MW-1.36 `WikiPage::factory()`
   fallback).
+- MediaWiki CodeSniffer (PHPCS) violations: missing doc comments, imprecise `object`
+  typehint, non-static closures, and `__METHOD__` used inside closures instead of
+  being captured outside them. `.phpcs.xml` now excludes `vendor/`, `build/`, and
+  `coverage/` so build artifacts are no longer scanned.
 
 ### Removed
 
