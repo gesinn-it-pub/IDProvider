@@ -1,7 +1,7 @@
 # IDProvider
 
-[![CI](https://github.com/gesinn-it/IDProvider/actions/workflows/main.yml/badge.svg)](https://github.com/gesinn-it/IDProvider/actions/workflows/main.yml)
-[![codecov](https://codecov.io/gh/gesinn-it/IDProvider/branch/master/graph/badge.svg?token=mmZl4g9Xsf)](https://codecov.io/gh/gesinn-it/IDProvider)
+[![CI](https://github.com/gesinn-it-pub/IDProvider/actions/workflows/ci.yml/badge.svg)](https://github.com/gesinn-it-pub/IDProvider/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/github/gesinn-it-pub/IDProvider/graph/badge.svg?token=mmZl4g9Xsf)](https://codecov.io/github/gesinn-it-pub/IDProvider)
 
 IDProvider is an extension to MediaWiki that provides (unique) IDs using different ID algorithms.
 
