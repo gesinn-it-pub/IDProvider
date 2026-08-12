@@ -10,7 +10,7 @@ CREATE TABLE /*_*/idprovider_increments
     pid       int unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT,
 
     -- Increment prefix name
-    prefix    text,
+    prefix    varbinary(255) NOT NULL DEFAULT '',
 
     -- Current increment number
     increment int unsigned NOT NULL default 0
@@ -18,3 +18,5 @@ CREATE TABLE /*_*/idprovider_increments
     -- Note value as a string.
 
 ) /*$wgDBTableOptions*/;
+
+CREATE UNIQUE INDEX /*i*/idprovider_increments_prefix ON /*_*/idprovider_increments (prefix);

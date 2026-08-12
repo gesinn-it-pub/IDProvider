@@ -56,19 +56,15 @@ class IdProviderFactory {
 	 * @return callable
 	 */
 	private static function dbExecute() {
-		$fname = __METHOD__;
-		return static function ( $action ) use ( $fname ) {
-			// Use a separate DB connection here to be able to avoid concurrency issues and
-			// not disturb possible surrounding transactions. (This seems to be natural as
-			// the creation of IDs is completely independent of actual MediaWiki data.)
-			$lb = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->newMainLB();
-			$dbw = $lb->getConnection( DB_PRIMARY );
-			$dbw->clearFlag( DBO_TRX );
+		return static function ( $action ) {
+			// Use the shared load balancer connection (respects the current DB domain,
+			// including any test table prefix, unlike a freshly constructed LoadBalancer).
+			// calculateIncrement() commits its change with a single atomic statement, so
+			// it does not need its own isolated connection to avoid disturbing a
+			// surrounding transaction.
+			$dbw = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_PRIMARY );
 
-			$result = $action( $dbw );
-
-			$lb->disable( $fname );
-			return $result;
+			return $action( $dbw );
 		};
 	}
 

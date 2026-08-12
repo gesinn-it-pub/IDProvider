@@ -32,7 +32,8 @@ class Hooks {
 	 * @return bool
 	 */
 	public static function onUnitTestsList( array &$files ): bool {
-		$files = array_merge( $files, glob( __DIR__ . '/../tests/phpunit/*Test.php' ) );
+		$files = array_merge( $files, glob( __DIR__ . '/../tests/phpunit/*/*Test.php' ) );
+		$files = array_merge( $files, glob( __DIR__ . '/../tests/phpunit/*/*/*Test.php' ) );
 
 		return true;
 	}
@@ -47,7 +48,53 @@ class Hooks {
 		$updater->addExtensionTable( 'idprovider_increments',
 			__DIR__ . '/../sql/CreateIncrementTable.sql' );
 
+		$updater->addExtensionField( 'idprovider_increments', 'prefix',
+			__DIR__ . '/../sql/PatchPrefixField.sql' );
+		$updater->addExtensionUpdate( [ [ self::class, 'mergeDuplicateIncrementPrefixes' ] ] );
+		$updater->addExtensionIndex( 'idprovider_increments', 'idprovider_increments_prefix',
+			__DIR__ . '/../sql/PatchPrefixUniqueIndex.sql' );
+
 		return true;
+	}
+
+	/**
+	 * Merges rows in idprovider_increments that share the same prefix (which could only
+	 * have happened due to the race condition fixed alongside the UNIQUE index migration),
+	 * keeping the highest increment value so no previously issued ID is reused.
+	 *
+	 * @param DatabaseUpdater $updater
+	 * @param string $tableName
+	 * @return void
+	 */
+	public static function mergeDuplicateIncrementPrefixes(
+		DatabaseUpdater $updater, string $tableName = 'idprovider_increments'
+	): void {
+		$fname = __METHOD__;
+		$dbw = $updater->getDB();
+		$duplicates = $dbw->select(
+			$tableName,
+			[ 'prefix', 'maxIncrement' => 'MAX(increment)', 'minPid' => 'MIN(pid)' ],
+			[],
+			$fname,
+			[ 'GROUP BY' => 'prefix', 'HAVING' => 'COUNT(*) > 1' ]
+		);
+
+		foreach ( $duplicates as $duplicate ) {
+			$dbw->update(
+				$tableName,
+				[ 'increment' => (int)$duplicate->maxIncrement ],
+				[ 'pid' => $duplicate->minPid ],
+				$fname
+			);
+			$dbw->delete(
+				$tableName,
+				[
+					'prefix' => $duplicate->prefix,
+					'pid != ' . $dbw->addQuotes( $duplicate->minPid ),
+				],
+				$fname
+			);
+		}
 	}
 
 	/**

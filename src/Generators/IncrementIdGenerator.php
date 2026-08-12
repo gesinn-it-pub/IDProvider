@@ -74,21 +74,27 @@ class IncrementIdGenerator {
 	private function calculateIncrement( string $prefix ) {
 		$fname = __METHOD__;
 		return ( $this->dbExecute )( static function ( $dbw ) use ( $prefix, $fname ) {
-			$prefixIncrement = $dbw->select( 'idprovider_increments', 'increment', [
-				'prefix' => $prefix,
-			], $fname );
+			return $dbw->doAtomicSection( $fname, static function ( $dbw ) use ( $prefix, $fname ) {
+				// Lock the row (or its absence) for the duration of the transaction so that
+				// concurrent calls for the same prefix cannot read the same increment value
+				// or both insert the first row for a new prefix.
+				$prefixIncrement = $dbw->select( 'idprovider_increments', 'increment', [
+					'prefix' => $prefix,
+				], $fname, [ 'FOR UPDATE' ] );
 
-			if ( $prefixIncrement->numRows() <= 0 ) {
-				$dbw->insert( 'idprovider_increments', [ 'prefix' => $prefix, 'increment' => 1 ] );
-				$increment = 1;
-			} else {
-				$incrementRow = $prefixIncrement->fetchRow();
-				$increment = $incrementRow['increment'] + 1;
-				$dbw->update( 'idprovider_increments', [ 'increment = ' . $increment ],
-					[ 'prefix' => $prefix ] );
-			}
+				if ( $prefixIncrement->numRows() <= 0 ) {
+					$dbw->insert( 'idprovider_increments', [ 'prefix' => $prefix, 'increment' => 1 ],
+						$fname );
+					$increment = 1;
+				} else {
+					$incrementRow = $prefixIncrement->fetchRow();
+					$increment = $incrementRow['increment'] + 1;
+					$dbw->update( 'idprovider_increments', [ 'increment = ' . $increment ],
+						[ 'prefix' => $prefix ], $fname );
+				}
 
-			return $increment;
+				return $increment;
+			} );
 		} );
 	}
 }
