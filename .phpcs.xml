@@ -2,4 +2,8 @@
 <ruleset>
     <rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki"/>
     <file>.</file>
+    <exclude-pattern type="relative">^vendor/</exclude-pattern>
+    <exclude-pattern type="relative">^node_modules/</exclude-pattern>
+    <exclude-pattern type="relative">^build/</exclude-pattern>
+    <exclude-pattern type="relative">^coverage/</exclude-pattern>
 </ruleset>
