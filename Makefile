@@ -29,3 +29,9 @@ COMPOSER_EXT?=true
 
 include build/Makefile
 
+.PHONY: composer-phan
+composer-phan: .init
+ifdef COMPOSER_EXT
+	$(show-current-target)
+	$(compose-exec-wiki) bash -c "cd $(EXTENSION_FOLDER) && composer phan $(COMPOSER_PARAMS)"
+endif
