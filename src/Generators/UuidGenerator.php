@@ -16,7 +16,6 @@ namespace MediaWiki\Extension\IdProvider\Generators;
  * Returns a UUID, using openssl random bytes
  *
  * @see http://stackoverflow.com/a/15875555
- *
  */
 class UuidGenerator {
 

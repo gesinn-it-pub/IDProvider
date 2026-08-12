@@ -52,6 +52,7 @@ class IdProviderTest extends TestCase {
 	private static function generator( $ids ) {
 		return new class ( $ids ) {
 
+			/** @var array */
 			private $ids;
 
 			public function __construct( $ids ) {

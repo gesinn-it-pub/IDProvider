@@ -22,7 +22,6 @@ use MediaWiki\Extension\IdProvider\Generators\UuidGenerator;
  * They can be used in a programmatic way through this class
  * Use the static getId function as the main entry point
  *
- * @file
  * @ingroup Extensions
  */
 class IdProvider {
