@@ -35,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   typehint, non-static closures, and `__METHOD__` used inside closures instead of
   being captured outside them. `.phpcs.xml` now excludes `vendor/`, `build/`, and
   `coverage/` so build artifacts are no longer scanned.
+- `FakeIdGenerator::generate()` passed the hex string from `uniqid()` to
+  `base_convert()` with a base-10 source, which is invalid for hex digits `a`-`f`
+  and triggered an `E_DEPRECATED` "Invalid characters passed for attempted
+  conversion" warning on every call (#11). Now correctly converts from base 16.
 
 ### Removed
 

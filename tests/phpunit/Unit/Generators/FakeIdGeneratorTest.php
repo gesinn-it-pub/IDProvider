@@ -44,4 +44,20 @@ class FakeIdGeneratorTest extends TestCase {
 
 		$this->assertNotSame( $generator->generate(), $generator->generate() );
 	}
+
+	public function testGenerateDoesNotTriggerDeprecationWarning() {
+		$caught = [];
+		set_error_handler( static function ( $errno, $errstr ) use ( &$caught ) {
+			$caught[] = $errstr;
+			return true;
+		}, E_DEPRECATED );
+
+		try {
+			( new FakeIdGenerator )->generate();
+		} finally {
+			restore_error_handler();
+		}
+
+		$this->assertSame( [], $caught, 'generate() must not trigger any E_DEPRECATED warning' );
+	}
 }
