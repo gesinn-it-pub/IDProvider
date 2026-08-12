@@ -1,24 +1,5 @@
 {
-  "name": "gesinn-it/id-provider",
-  "type": "mediawiki-extension",
   "description": "IDProvider is an extension to MediaWiki that provides (unique) IDs using different ID algorithms.",
-  "keywords": [
-    "wiki",
-    "MediaWiki",
-    "extension",
-    "Service",
-    "ID",
-    "UUID"
-  ],
-  "homepage": "https://github.com/gesinn-it/IDProvider",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Simon Heimler",
-      "email": "heimlersimon@gmail.com",
-      "role": "Developer"
-    }
-  ],
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
